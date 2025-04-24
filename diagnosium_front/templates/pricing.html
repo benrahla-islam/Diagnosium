@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnosium - Pricing Plans</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            color: #333;
+            background-color: #fafafa;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3a7bd5;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 36px;
+            margin-right: 8px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin: 0 15px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: #3a7bd5;
+        }
+        
+        .sign-in-btn {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .sign-in-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 210, 255, 0.3);
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            padding: 140px 0 80px;
+        }
+
+        .pricing-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .pricing-title h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .pricing-title p {
+            font-size: 18px;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .pricing-cards {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            width: 350px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .pricing-card-header {
+            padding: 30px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .pricing-card.free .pricing-card-header {
+            background: linear-gradient(135deg, #83a4d4, #b6fbff);
+            color: #2d3748;
+        }
+
+        .pricing-card.pro .pricing-card-header {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+        }
+
+        .pricing-card-header h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .price {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .price span {
+            font-size: 18px;
+            font-weight: 400;
+        }
+
+        .pricing-card-body {
+            padding: 30px;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .features-list li {
+            padding: 10px 0;
+            position: relative;
+            padding-left: 30px;
+            line-height: 1.5;
+        }
+
+        .features-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #3a7bd5;
+            font-weight: bold;
+        }
+
+        .pricing-card-footer {
+            padding: 0 30px 30px;
+            text-align: center;
+        }
+
+        .select-plan-btn {
+            display: inline-block;
+            width: 100%;
+            padding: 12px 0;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .pricing-card.free .select-plan-btn {
+            border: 2px solid #3a7bd5;
+            color: #3a7bd5;
+            background: transparent;
+        }
+
+        .pricing-card.free .select-plan-btn:hover {
+            background: rgba(58, 123, 213, 0.1);
+        }
+
+        .pricing-card.pro .select-plan-btn {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            border: none;
+        }
+
+        .pricing-card.pro .select-plan-btn:hover {
+            box-shadow: 0 6px 15px rgba(0, 210, 255, 0.3);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 15px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 20px;
+            z-index: 1;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2d3748;
+            color: white;
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column {
+            width: 250px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #cbd5e0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-column ul li a:hover {
+            color: #3a7bd5;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e0;
+            font-size: 14px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+            
+            nav {
+                margin: 15px 0;
+            }
+            
+            .sign-in-btn {
+                margin-top: 15px;
+            }
+            
+            .pricing-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <img src="../static/logo.png" alt="Diagnosium Logo">
+                        Diagnosium
+                    </div>
+                    <nav>
+                        <ul>
+                            <li><a href="home.html">Home</a></li>
+                            <li><a href="chat.html">Chat</a></li>
+                            <li><a href="pricing.html">Pricing</a></li>
+                        </ul>
+                    </nav>
+                    <button class="sign-in-btn" @click="signIn">Sign In</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Pricing Section -->
+        <section class="pricing-section">
+            <div class="container">
+                <div class="pricing-title">
+                    <h1>Choose Your Plan</h1>
+                    <p>Select the plan that best fits your healthcare needs and access our AI-powered diagnostic assistant.</p>
+                </div>
+                <div class="pricing-cards">
+                    <!-- Free Plan Card -->
+                    <div class="pricing-card free">
+                        <div class="pricing-card-header">
+                            <h2>Free Plan</h2>
+                            <div class="price">$0 <span>/month</span></div>
+                            <p>Basic diagnostic assistance</p>
+                        </div>
+                        <div class="pricing-card-body">
+                            <ul class="features-list">
+                                <li>Basic symptom checking</li>
+                                <li>Limited bot conversations (5 per day)</li>
+                                <li>Nearby hospital and doctor recommendations</li>
+                                <li>Emergency resource locator</li>
+                                <li>Health articles and tips</li>
+                                <li>Community forum access</li>
+                            </ul>
+                        </div>
+                        <div class="pricing-card-footer">
+                            <button class="select-plan-btn" @click="selectPlan('free')">Get Started</button>
+                        </div>
+                    </div>
+
+                    <!-- Pro Plan Card -->
+                    <div class="pricing-card pro" style="position: relative;">
+                        <div class="popular-badge">MOST POPULAR</div>
+                        <div class="pricing-card-header">
+                            <h2>Pro Plan</h2>
+                            <div class="price">$19.99 <span>/month</span></div>
+                            <p>Advanced healthcare insights</p>
+                        </div>
+                        <div class="pricing-card-body">
+                            <ul class="features-list">
+                                <li>All Free plan features</li>
+                                <li>Unlimited bot conversations</li>
+                                <li>Advanced symptom analysis</li>
+                                <li>Medical file upload & analysis</li>
+                                <li>Personalized health tracking</li>
+                                <li>Memory of your health history</li>
+                                <li>Detailed health reports</li>
+                                <li>Priority telehealth referrals</li>
+                            </ul>
+                        </div>
+                        <div class="pricing-card-footer">
+                            <button class="select-plan-btn" @click="selectPlan('pro')">Subscribe Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-column">
+                        <h3>Diagnosium</h3>
+                        <p>Leading the future of diagnostic healthcare with innovative AI-powered solutions.</p>
+                    </div>
+                    <div class="footer-column">
+                        <h3>About Us</h3>
+                        <ul>
+                            <li><a href="#about">Our Story</a></li>
+                            <li><a href="#team">Team</a></li>
+                            <li><a href="#careers">Careers</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#blog">Blog</a></li>
+                            <li><a href="#docs">Documentation</a></li>
+                            <li><a href="#case-studies">Case Studies</a></li>
+                            <li><a href="#faq">FAQ</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Legal</h3>
+                        <ul>
+                            <li><a href="#terms">Terms of Service</a></li>
+                            <li><a href="#privacy">Privacy Policy</a></li>
+                            <li><a href="#user-agreement">User Agreement</a></li>
+                            <li><a href="#compliance">Compliance</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="copyright">
+                    <p>© {{ new Date().getFullYear() }} Diagnosium. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            methods: {
+                signIn() {
+                    alert('Sign In functionality will be implemented here');
+                },
+                selectPlan(plan) {
+                    if (plan === 'free') {
+                        alert('You have selected the Free Plan. Redirecting to registration...');
+                        // Redirect to registration or activation page
+                    } else if (plan === 'pro') {
+                        alert('You have selected the Pro Plan. Redirecting to payment page...');
+                        // Redirect to payment page
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
