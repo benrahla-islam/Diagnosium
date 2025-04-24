@@ -483,10 +483,10 @@
                     </div>
                     <nav>
                         <ul>
-                            <li><a href="home.html">Home</a></li>
-                            <li><a href="chat.html">Chat</a></li>
-                            <li><a href="pricing.html">Pricing</a></li>
-                            <li><a href="about.html">About</a></li>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/chat">Chat</a></li>
+                            <li><a href="/pricing">Pricing</a></li>
+                            <li><a href="/about">About</a></li>
                         </ul>
                     </nav>
                     <button class="sign-in-btn" @click="signIn">Sign In</button>
@@ -570,9 +570,9 @@
                         <div class="member-image">
                             <img :src="member.image" :alt="member.name">
                         </div>
-                        <h3 class="member-name">{{ member.name }}</h3>
-                        <p class="member-role">{{ member.role }}</p>
-                        <p class="member-bio">{{ member.bio }}</p>
+                        <h3 class="member-name">[[ member.name ]]</h3>
+                        <p class="member-role">[[ member.role ]]</p>
+                        <p class="member-bio">[[ member.bio ]]</p>
                         <div class="social-links">
                             <a href="#" class="social-link">in</a>
                             <a href="#" class="social-link">t</a>
@@ -658,33 +658,33 @@
                     <div class="footer-column">
                         <h3>About Us</h3>
                         <ul>
-                            <li><a href="#about">Our Story</a></li>
-                            <li><a href="#team">Team</a></li>
-                            <li><a href="#careers">Careers</a></li>
-                            <li><a href="#contact">Contact</a></li>
+                            <li><a href="/about">Our Story</a></li>
+                            <li><a href="/about#team">Team</a></li>
+                            <li><a href="/about#careers">Careers</a></li>
+                            <li><a href="/about#contact">Contact</a></li>
                         </ul>
                     </div>
                     <div class="footer-column">
                         <h3>Resources</h3>
                         <ul>
-                            <li><a href="#blog">Blog</a></li>
-                            <li><a href="#docs">Documentation</a></li>
-                            <li><a href="#case-studies">Case Studies</a></li>
-                            <li><a href="#faq">FAQ</a></li>
+                            <li><a href="/blog">Blog</a></li>
+                            <li><a href="/docs">Documentation</a></li>
+                            <li><a href="/case-studies">Case Studies</a></li>
+                            <li><a href="/faq">FAQ</a></li>
                         </ul>
                     </div>
                     <div class="footer-column">
                         <h3>Legal</h3>
                         <ul>
-                            <li><a href="#terms">Terms of Service</a></li>
-                            <li><a href="#privacy">Privacy Policy</a></li>
-                            <li><a href="#user-agreement">User Agreement</a></li>
-                            <li><a href="#compliance">Compliance</a></li>
+                            <li><a href="/terms">Terms of Service</a></li>
+                            <li><a href="/privacy">Privacy Policy</a></li>
+                            <li><a href="/user-agreement">User Agreement</a></li>
+                            <li><a href="/compliance">Compliance</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="copyright">
-                    <p>© {{ new Date().getFullYear() }} Diagnosium. All rights reserved.</p>
+                    <p>© [[ new Date().getFullYear() ]] Diagnosium. All rights reserved.</p>
                 </div>
             </div>
         </footer>
@@ -693,6 +693,7 @@
     <script>
         new Vue({
             el: '#app',
+            delimiters: ['[[', ']]'],
             data: {
                 teamMembers: [
                     {

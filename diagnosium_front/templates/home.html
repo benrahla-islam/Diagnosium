@@ -296,13 +296,15 @@
             <div class="container">
                 <div class="header-content">
                     <div class="logo">
-                        <img src="https://via.placeholder.com/36x36" alt="Diagnosium Logo">
+                        <img src="../static/logo.png" alt="Diagnosium Logo">
                         Diagnosium
                     </div>
                     <nav>
                         <ul>
-                            <li><a href="#product">Product</a></li>
-                            <li><a href="#pricing">Pricing</a></li>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/chat">Chat</a></li>
+                            <li><a href="/pricing">Pricing</a></li>
+                            <li><a href="/about">About</a></li>
                         </ul>
                     </nav>
                     <button class="sign-in-btn" @click="signIn">Sign In</button>
@@ -315,7 +317,7 @@
             <div class="container">
                 <div class="hero-content">
                     <div class="hero-image">
-                        <img src="https://via.placeholder.com/500x400" alt="Diagnosium Platform">
+                        <img src="../static/hero-image.jpg" alt="Diagnosium Platform">
                     </div>
                     <div class="hero-text">
                         <h1>Advanced Diagnostic Solutions for Modern Healthcare</h1>
@@ -332,9 +334,9 @@
                 <h2 class="section-title">Why Choose Diagnosium</h2>
                 <div class="cards-container">
                     <div class="card" v-for="(card, index) in featureCards" :key="index">
-                        <div class="card-icon">{{ card.icon }}</div>
-                        <h3>{{ card.title }}</h3>
-                        <p>{{ card.description }}</p>
+                        <div class="card-icon">[[ card.icon ]]</div>
+                        <h3>[[ card.title ]]</h3>
+                        <p>[[ card.description ]]</p>
                     </div>
                 </div>
             </div>
@@ -377,7 +379,7 @@
                     </div>
                 </div>
                 <div class="copyright">
-                    <p>© {{ new Date().getFullYear() }} Diagnosium. All rights reserved.</p>
+                    <p>© [[ new Date().getFullYear() ]] Diagnosium. All rights reserved.</p>
                 </div>
             </div>
         </footer>
@@ -386,6 +388,7 @@
     <script>
         new Vue({
             el: '#app',
+            delimiters: ['[[', ']]'],
             data: {
                 featureCards: [
                     {
