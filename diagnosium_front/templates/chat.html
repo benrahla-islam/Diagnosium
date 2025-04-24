@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnosium - Chat Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            color: #333;
+            background-color: #fafafa;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3a7bd5;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 36px;
+            margin-right: 8px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin: 0 15px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: #3a7bd5;
+        }
+
+        /* Chat Interface Styles */
+        .chat-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 120px auto 50px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 240px);
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            padding: 15px 20px;
+            font-weight: 500;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .chat-header .status {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background-color: #f0f2f5;
+            color: #333;
+            border-bottom-left-radius: 4px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .bot-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .initial-message {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            padding: 10px 18px;
+            background-color: #f0f2f5;
+            border-radius: 18px;
+            width: fit-content;
+            margin: 5px 0;
+            align-self: flex-start;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            margin: 0 2px;
+            background-color: #3a7bd5;
+            border-radius: 50%;
+            display: inline-block;
+            opacity: 0.4;
+        }
+
+        .typing-indicator span:nth-child(1) {
+            animation: pulse 1s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation: pulse 1s infinite 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation: pulse 1s infinite 0.4s;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+
+        .timestamp {
+            font-size: 11px;
+            color: rgba(0, 0, 0, 0.5);
+            margin-top: 5px;
+            display: block;
+            text-align: right;
+        }
+
+        .chat-input {
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #eaeaea;
+            padding: 15px 20px;
+            background-color: white;
+        }
+
+        .chat-input input {
+            flex: 1;
+            border: none;
+            background: #f0f2f5;
+            padding: 12px 16px;
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+            transition: background 0.3s ease;
+        }
+
+        .chat-input input:focus {
+            background: #e9edf2;
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        .send-button:hover {
+            transform: scale(1.05);
+        }
+
+        .send-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2d3748;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 14px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .chat-container {
+                margin: 100px auto 30px;
+                height: calc(100vh - 180px);
+                border-radius: 0;
+            }
+            
+            .header-content {
+                padding: 10px 0;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <img src="../static/logo.png" alt="Diagnosium Logo">
+                        Diagnosium
+                    </div>
+                    <nav>
+                        <ul>
+                            <li><a href="home.html">Home</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <!-- Chat Interface -->
+        <div class="container">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div>Diagnosium Assistant</div>
+                    <div class="status">{{ botStatus }}</div>
+                </div>
+                
+                <div class="chat-messages" ref="chatMessages">
+                    <div v-if="messages.length === 0" class="initial-message">
+                        <img src="../static/logo.png" alt="Diagnosium Logo" class="bot-avatar">
+                        <div class="bot-message">
+                            How can I help you today? Ask me anything about diagnostics.
+                        </div>
+                    </div>
+                    
+                    <div v-for="(message, index) in messages" :key="index" 
+                         :class="['message', message.sender === 'user' ? 'user-message' : 'bot-message']">
+                        <img v-if="message.sender === 'bot'" src="../static/logo.png" alt="Diagnosium Logo" class="bot-avatar">
+                        <div class="message-content">
+                            {{ message.text }}
+                            <span class="timestamp">{{ message.time }}</span>
+                        </div>
+                    </div>
+                    
+                    <div v-if="isTyping" class="typing-indicator">
+                        <img src="../static/logo.png" alt="Diagnosium Logo" class="bot-avatar">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+                
+                <div class="chat-input">
+                    <input 
+                        type="text" 
+                        v-model="userInput" 
+                        placeholder="Type your message here..." 
+                        @keyup.enter="sendMessage"
+                        :disabled="isTyping"
+                    >
+                    <button class="send-button" @click="sendMessage" :disabled="isTyping">
+                        ➤
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <p>© {{ new Date().getFullYear() }} Diagnosium. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                userInput: '',
+                messages: [],
+                isTyping: false,
+                botStatus: 'Online'
+            },
+            methods: {
+                sendMessage() {
+                    // Don't send empty messages
+                    if (!this.userInput.trim()) return;
+                    
+                    // Add user message
+                    const userMessage = {
+                        text: this.userInput,
+                        sender: 'user',
+                        time: this.getCurrentTime()
+                    };
+                    this.messages.push(userMessage);
+                    
+                    // Clear input field
+                    const userQuestion = this.userInput;
+                    this.userInput = '';
+                    
+                    // Show typing indicator
+                    this.isTyping = true;
+                    this.botStatus = 'Typing...';
+                    
+                    // Simulate API call - replace with actual API implementation
+                    setTimeout(() => {
+                        this.getBotResponse(userQuestion);
+                    }, 1500);
+                },
+                
+                getBotResponse(question) {
+                    // PLACEHOLDER: Replace this with your actual API call
+                    // axios.post('/api/chat', { question: question })
+                    //     .then(response => {
+                    //         this.addBotMessage(response.data.answer);
+                    //     })
+                    //     .catch(error => {
+                    //         this.addBotMessage("Sorry, I'm having trouble connecting to the server.");
+                    //         console.error(error);
+                    //     })
+                    //     .finally(() => {
+                    //         this.isTyping = false;
+                    //         this.botStatus = 'Online';
+                    //     });
+                    
+                    // Simulated response for now
+                    let botResponse = "I'm a simulated response. In the real implementation, this would be replaced with data from your API. Your question was: \"" + question + "\"";
+                    this.addBotMessage(botResponse);
+                    this.isTyping = false;
+                    this.botStatus = 'Online';
+                },
+                
+                addBotMessage(text) {
+                    const botMessage = {
+                        text: text,
+                        sender: 'bot',
+                        time: this.getCurrentTime()
+                    };
+                    this.messages.push(botMessage);
+                    
+                    // Scroll to bottom after message is added and rendered
+                    this.$nextTick(() => {
+                        this.scrollToBottom();
+                    });
+                },
+                
+                getCurrentTime() {
+                    const now = new Date();
+                    return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                },
+                
+                scrollToBottom() {
+                    const chatContainer = this.$refs.chatMessages;
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                }
+            },
+            updated() {
+                // Ensure chat is scrolled to bottom when new messages arrive
+                this.scrollToBottom();
+            },
+            mounted() {
+                // Focus the input field when page loads
+                this.$nextTick(() => {
+                    const inputField = document.querySelector('.chat-input input');
+                    if (inputField) inputField.focus();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

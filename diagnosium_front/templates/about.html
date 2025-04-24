@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnosium - About Us</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            color: #333;
+            background-color: #fafafa;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3a7bd5;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 36px;
+            margin-right: 8px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin: 0 15px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: #3a7bd5;
+        }
+        
+        .sign-in-btn {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .sign-in-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 210, 255, 0.3);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 140px 0 80px;
+            background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+        }
+        
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero-content h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-content p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #666;
+        }
+
+        /* About Section Styles */
+        .about-section {
+            padding: 80px 0;
+        }
+
+        .about-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-image img {
+            width: 100%;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .about-content {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .about-content h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .about-content p {
+            margin-bottom: 20px;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .highlight {
+            color: #3a7bd5;
+            font-weight: 500;
+        }
+
+        /* Mission Section */
+        .mission-section {
+            padding: 80px 0;
+            background-color: #f5f7fa;
+        }
+
+        .mission-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .mission-content h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .mission-content p {
+            margin-bottom: 20px;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .values-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .value-card {
+            width: 250px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .value-icon {
+            font-size: 36px;
+            color: #3a7bd5;
+            margin-bottom: 15px;
+        }
+
+        .value-card h3 {
+            margin-bottom: 15px;
+        }
+
+        .value-card p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Team Section */
+        .team-section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .section-title p {
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .team-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .team-member {
+            width: 260px;
+            text-align: center;
+        }
+
+        .member-image {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 5px solid white;
+        }
+
+        .member-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .team-member:hover .member-image img {
+            transform: scale(1.1);
+        }
+
+        .member-name {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .member-role {
+            color: #3a7bd5;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .member-bio {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .social-link {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f0f2f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #666;
+        }
+
+        .social-link:hover {
+            background: #3a7bd5;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* Contact Section */
+        .contact-section {
+            padding: 80px 0;
+            background-color: #f5f7fa;
+        }
+
+        .contact-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .contact-info {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .contact-info h2 {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .contact-details {
+            list-style: none;
+        }
+
+        .contact-details li {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .contact-icon {
+            margin-right: 15px;
+            width: 24px;
+            text-align: center;
+            color: #3a7bd5;
+        }
+
+        .contact-text {
+            flex: 1;
+        }
+
+        .contact-text h4 {
+            margin-bottom: 5px;
+        }
+
+        .contact-text p, .contact-text a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-text a:hover {
+            color: #3a7bd5;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2d3748;
+            color: white;
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column {
+            width: 250px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #cbd5e0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-column ul li a:hover {
+            color: #3a7bd5;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e0;
+            font-size: 14px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .about-container, .contact-container {
+                flex-direction: column;
+            }
+            
+            .about-image {
+                margin-bottom: 30px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+            }
+            
+            nav {
+                margin: 15px 0;
+            }
+            
+            .sign-in-btn {
+                margin-top: 15px;
+            }
+            
+            .hero-content h1 {
+                font-size: 32px;
+            }
+            
+            .section-title h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <img src="../static/logo.png" alt="Diagnosium Logo">
+                        Diagnosium
+                    </div>
+                    <nav>
+                        <ul>
+                            <li><a href="home.html">Home</a></li>
+                            <li><a href="chat.html">Chat</a></li>
+                            <li><a href="pricing.html">Pricing</a></li>
+                            <li><a href="about.html">About</a></li>
+                        </ul>
+                    </nav>
+                    <button class="sign-in-btn" @click="signIn">Sign In</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>About Diagnosium</h1>
+                    <p>We're reimagining healthcare diagnostics with cutting-edge AI technology to improve patient outcomes and empower medical professionals worldwide.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about-section">
+            <div class="container">
+                <div class="about-container">
+                    <div class="about-image">
+                        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=1000" alt="Diagnosium Office">
+                    </div>
+                    <div class="about-content">
+                        <h2>Our Story</h2>
+                        <p>Diagnosium was founded in 2020 by a team of healthcare professionals and AI specialists who recognized the potential for artificial intelligence to revolutionize medical diagnostics.</p>
+                        <p>What started as a research project at a leading medical university has evolved into a comprehensive platform that combines <span class="highlight">advanced machine learning algorithms</span> with clinical expertise to provide accurate, timely diagnostic assistance.</p>
+                        <p>Today, Diagnosium serves healthcare providers and patients across the globe, constantly improving our technology to make healthcare more accessible, efficient, and precise.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission Section -->
+        <section class="mission-section">
+            <div class="container">
+                <div class="mission-content">
+                    <h2>Our Mission & Values</h2>
+                    <p>At Diagnosium, our mission is to democratize access to accurate medical diagnostics through responsible AI implementation, making quality healthcare more accessible to everyone.</p>
+                    
+                    <div class="values-container">
+                        <div class="value-card">
+                            <div class="value-icon">🎯</div>
+                            <h3>Accuracy</h3>
+                            <p>We're committed to providing the most accurate diagnostic assistance through continuous learning and improvement.</p>
+                        </div>
+                        
+                        <div class="value-card">
+                            <div class="value-icon">🔒</div>
+                            <h3>Privacy</h3>
+                            <p>We maintain the highest standards of data protection and patient confidentiality in everything we do.</p>
+                        </div>
+                        
+                        <div class="value-card">
+                            <div class="value-icon">♿</div>
+                            <h3>Accessibility</h3>
+                            <p>We believe quality healthcare diagnostics should be accessible to everyone, regardless of location or resources.</p>
+                        </div>
+                        
+                        <div class="value-card">
+                            <div class="value-icon">🤝</div>
+                            <h3>Collaboration</h3>
+                            <p>We work alongside healthcare professionals, embracing their expertise to enhance our technology.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section class="team-section">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Meet Our Leadership Team</h2>
+                    <p>The passionate individuals behind Diagnosium who are dedicated to transforming healthcare diagnostics.</p>
+                </div>
+                
+                <div class="team-container">
+                    <div class="team-member" v-for="(member, index) in teamMembers" :key="index">
+                        <div class="member-image">
+                            <img :src="member.image" :alt="member.name">
+                        </div>
+                        <h3 class="member-name">{{ member.name }}</h3>
+                        <p class="member-role">{{ member.role }}</p>
+                        <p class="member-bio">{{ member.bio }}</p>
+                        <div class="social-links">
+                            <a href="#" class="social-link">in</a>
+                            <a href="#" class="social-link">t</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact-section">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Get in Touch</h2>
+                    <p>Have questions or want to learn more about Diagnosium? We'd love to hear from you.</p>
+                </div>
+                
+                <div class="contact-container">
+                    <div class="contact-info">
+                        <ul class="contact-details">
+                            <li>
+                                <div class="contact-icon">📍</div>
+                                <div class="contact-text">
+                                    <h4>Office</h4>
+                                    <p>123 Innovation Drive, Silicon Valley, CA 94043, USA</p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="contact-icon">📞</div>
+                                <div class="contact-text">
+                                    <h4>Phone</h4>
+                                    <p><a href="tel:+1234567890">+1 (234) 567-890</a></p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="contact-icon">✉️</div>
+                                <div class="contact-text">
+                                    <h4>Email</h4>
+                                    <p><a href="mailto:info@diagnosium.com">info@diagnosium.com</a></p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="contact-icon">🕒</div>
+                                <div class="contact-text">
+                                    <h4>Hours</h4>
+                                    <p>Monday - Friday: 9am - 6pm EST</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="contact-info">
+                        <h2>For Media Inquiries</h2>
+                        <ul class="contact-details">
+                            <li>
+                                <div class="contact-icon">✉️</div>
+                                <div class="contact-text">
+                                    <h4>Press Contact</h4>
+                                    <p><a href="mailto:press@diagnosium.com">press@diagnosium.com</a></p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="contact-icon">📞</div>
+                                <div class="contact-text">
+                                    <h4>Media Phone</h4>
+                                    <p><a href="tel:+1234567891">+1 (234) 567-891</a></p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-column">
+                        <h3>Diagnosium</h3>
+                        <p>Leading the future of diagnostic healthcare with innovative AI-powered solutions.</p>
+                    </div>
+                    <div class="footer-column">
+                        <h3>About Us</h3>
+                        <ul>
+                            <li><a href="#about">Our Story</a></li>
+                            <li><a href="#team">Team</a></li>
+                            <li><a href="#careers">Careers</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#blog">Blog</a></li>
+                            <li><a href="#docs">Documentation</a></li>
+                            <li><a href="#case-studies">Case Studies</a></li>
+                            <li><a href="#faq">FAQ</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Legal</h3>
+                        <ul>
+                            <li><a href="#terms">Terms of Service</a></li>
+                            <li><a href="#privacy">Privacy Policy</a></li>
+                            <li><a href="#user-agreement">User Agreement</a></li>
+                            <li><a href="#compliance">Compliance</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="copyright">
+                    <p>© {{ new Date().getFullYear() }} Diagnosium. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                teamMembers: [
+                    {
+                        name: 'Dr. Sarah Chen',
+                        role: 'Co-Founder & CEO',
+                        bio: 'Former neurologist with 15+ years of clinical experience and a passion for healthcare innovation.',
+                        image: 'https://randomuser.me/api/portraits/women/23.jpg'
+                    },
+                    {
+                        name: 'Michael Rodriguez',
+                        role: 'Co-Founder & CTO',
+                        bio: 'AI specialist with a Ph.D. in Machine Learning and previous experience at leading tech companies.',
+                        image: 'https://randomuser.me/api/portraits/men/32.jpg'
+                    },
+                    {
+                        name: 'Dr. James Wilson',
+                        role: 'Chief Medical Officer',
+                        bio: 'Experienced physician and medical researcher specializing in diagnostic medicine and clinical workflows.',
+                        image: 'https://randomuser.me/api/portraits/men/92.jpg'
+                    },
+                    {
+                        name: 'Aisha Patel',
+                        role: 'Head of Product',
+                        bio: 'Product leader with experience at healthcare startups and a focus on user-centered design.',
+                        image: 'https://randomuser.me/api/portraits/women/65.jpg'
+                    }
+                ]
+            },
+            methods: {
+                signIn() {
+                    alert('Sign In functionality will be implemented here');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
