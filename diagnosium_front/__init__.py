@@ -1,65 +1,32 @@
-import os
 from flask import Flask
-from flask_session import Session
-from dotenv import load_dotenv
-from flask_migrate import Migrate
-# from BackEnd.Database.ProjectDatabase import db
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+from .routes import routes
 
-# Load environment variables first
-load_dotenv()
+db = SQLAlchemy()
 
-# Initialize extensions outside app factory (to avoid circular imports)
-migrate = Migrate()
-sess = Session()
-
-def create_app(config_class=None):
-    """Application factory with optional config class"""
-    app = Flask(__name__,
-                static_folder='static',
-                template_folder='templates')
-
-    # Configure application
-    configure_app(app, config_class)
+def create_app():
+    app = Flask(__name__)
+    app.config['SECRET_KEY'] = 'change-this-to-a-random-key-in-production'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
-    # Initialize extensions with app
-    initialize_extensions(app)
+    db.init_app(app)
     
-    # Register blueprints
-    register_blueprints(app)
+    login_manager = LoginManager()
+    login_manager.login_view = 'routes.login'
+    login_manager.init_app(app)
+    
+    from .models import User
+    
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+    
+    # Register blueprint
+    app.register_blueprint(routes)
+    
+    with app.app_context():
+        db.create_all()
     
     return app
-
-def configure_app(app, config_class):
-    """Handle application configuration"""
-    # Default configuration
-    app.config.from_mapping(
-        SECRET_KEY=os.getenv('SECRET_KEY', 'fallback_secret_key_123'),
-        SESSION_TYPE='filesystem',
-        SESSION_PERMANENT=False,
-        SESSION_USE_SIGNER=True,
-        # SQLALCHEMY_DATABASE_URI=os.getenv('DATABASE_URL'),
-        SQLALCHEMY_TRACK_MODIFICATIONS=False
-    )
-    
-    # Optional class-based configuration
-    if config_class:
-        app.config.from_object(config_class)
-
-def initialize_extensions(app):
-    """Initialize Flask extensions"""
-    # db.init_app(app)
-    sess.init_app(app)
-    # migrate.init_app(app, db)
-    
-    # Create tables if in development
-    # if app.config.get('DEBUG'):
-    #     with app.app_context():
-    #         db.create_all()
-
-def register_blueprints(app):
-    """Register Flask blueprints"""
-    # from BackEnd.API import api_bp
-    from routes import routes
-    
-    # app.register_blueprint(api_bp)
-    app.register_blueprint(routes)
