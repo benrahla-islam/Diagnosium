@@ -1,10 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_login import login_user, logout_user, login_required, current_user
+from flask_login import login_user, logout_user, login_required, current_user, LoginManager
 from werkzeug.security import generate_password_hash, check_password_hash
-from diagnosium_front.models import User
-from diagnosium_front.models import db
+
+# Use absolute imports instead of relative
+from models import User, db
 
 routes = Blueprint('routes', __name__)
+login_manager = LoginManager()
 
 @routes.route('/')
 def index():
@@ -19,6 +21,7 @@ def pricing():
 def about():
     return render_template('about.html')
 
+@login_required
 @routes.route('/chat')
 def chat():
     return render_template('chat.html')
@@ -74,7 +77,8 @@ def signup():
         db.session.commit()
         
         flash('Account created successfully! You can now log in.', 'success')
-        return redirect(url_for('routes.login'))
+        login_user(new_user)
+        return redirect(url_for('routes.index'))
     
     return render_template('signup.html')
 
