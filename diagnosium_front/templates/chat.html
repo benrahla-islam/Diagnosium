@@ -7,25 +7,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <style>
+        /* --- Keep ALL your existing CSS styles here --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
         }
-        
+
         body {
             color: #333;
             background-color: #fafafa;
+            padding-bottom: 80px; /* Add padding to prevent footer overlap */
         }
-        
+
         .container {
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
-        
+
         /* Header Styles */
         header {
             background-color: #ffffff;
@@ -35,14 +37,14 @@
             top: 0;
             z-index: 100;
         }
-        
+
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px 0;
         }
-        
+
         .logo {
             font-size: 24px;
             font-weight: 700;
@@ -50,44 +52,60 @@
             display: flex;
             align-items: center;
         }
-        
+
         .logo img {
             height: 36px;
             margin-right: 8px;
         }
-        
+
         nav ul {
             display: flex;
             list-style: none;
         }
-        
+
         nav ul li {
             margin: 0 15px;
         }
-        
+
         nav ul li a {
             text-decoration: none;
             color: #333;
             font-weight: 500;
             transition: color 0.3s ease;
         }
-        
+
         nav ul li a:hover {
             color: #3a7bd5;
         }
+
+        .sign-in-btn { /* Added basic styling for sign-in button if missing */
+             background: #3a7bd5;
+             color: #fff;
+             border: none;
+             padding: 8px 18px;
+             border-radius: 20px;
+             cursor: pointer;
+             font-weight: 500;
+             transition: background 0.2s;
+        }
+        .sign-in-btn:hover {
+            background: #005fa3;
+        }
+
 
         /* Chat Interface Styles */
         .chat-container {
             width: 100%;
             max-width: 900px;
-            margin: 120px auto 50px;
+            margin: 120px auto 50px; /* Adjusted margin */
             background: white;
             border-radius: 12px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: calc(100vh - 240px);
+             min-height: 500px; /* Give it a minimum height */
+            height: calc(100vh - 280px); /* Adjusted height calculation */
         }
 
         .chat-header {
@@ -100,7 +118,7 @@
             align-items: center;
             justify-content: space-between;
         }
-        
+
         .chat-header .status {
             font-size: 14px;
             opacity: 0.9;
@@ -151,6 +169,7 @@
             border-radius: 50%;
             margin-right: 10px;
             flex-shrink: 0;
+            margin-top: 2px; /* Align avatar better */
         }
 
         .message-content {
@@ -208,11 +227,21 @@
 
         .timestamp {
             font-size: 11px;
-            color: rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 0.8); /* White for user */
             margin-top: 5px;
             display: block;
             text-align: right;
         }
+        .bot-message .timestamp {
+             color: rgba(0, 0, 0, 0.5); /* Darker for bot */
+             text-align: left; /* Align left for bot */
+             margin-left: 34px; /* Align with text after avatar */
+        }
+        .bot-message .message-content .timestamp { /* More specific selector */
+            margin-left: 0;
+            text-align: left;
+        }
+
 
         .chat-input {
             display: flex;
@@ -231,64 +260,149 @@
             font-size: 14px;
             outline: none;
             transition: background 0.3s ease;
+            margin-right: 10px; /* Add space before buttons */
         }
 
         .chat-input input:focus {
             background: #e9edf2;
         }
 
-        .send-button {
-            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
-            color: white;
+        .send-button, .camera-button { /* Combine styles */
             border: none;
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            margin-left: 10px;
+            margin-left: 5px; /* Reduced margin */
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease, background 0.2s ease;
         }
 
+        .send-button {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            font-size: 18px; /* Adjusted icon size */
+        }
         .send-button:hover {
             transform: scale(1.05);
         }
-
-        .send-button:active {
+         .send-button:active {
             transform: scale(0.95);
+        }
+
+        .camera-button {
+            background: #f0f2f5;
+            color: #555; /* Darker gray */
+            font-size: 20px;
+        }
+        .camera-button:hover {
+            transform: scale(1.05);
+            background: #e0e0e0;
+        }
+
+
+        /* Map Section Styles */
+        .map-section {
+            width: 100%;
+            max-width: 900px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            position: relative;
+        }
+
+        #map-container {
+            width: 100%;
+            height: 400px;
+            border-radius: 8px;
+            background-color: #e0e0e0; /* Placeholder background */
+        }
+
+        .info-box {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(255, 255, 255, 0.9); /* Slightly transparent */
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            max-width: 280px; /* Adjusted max-width */
+            z-index: 10;
+            font-size: 13px;
+        }
+
+        .legend {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .legend-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .pharmacy-icon {
+            background-color: #4CAF50; /* Standard Green */
+        }
+
+        .hospital-icon {
+            background-color: #F44336; /* Standard Red */
+        }
+
+        .you-icon {
+            background-color: #4285F4; /* Google Blue */
+        }
+
+        #status {
+           font-size: 12px;
+           margin-top: 8px;
+           color: #555;
+           font-style: italic;
         }
 
         /* Footer */
         footer {
             background-color: #2d3748;
             color: white;
-            padding: 20px 0;
+            padding: 20px 0 10px 0; /* Reduced bottom padding */
             text-align: center;
             font-size: 14px;
-            position: fixed;
-            bottom: 0;
+            /* Removed fixed positioning to allow scrolling */
+            /* position: fixed; */
+            /* bottom: 0; */
             width: 100%;
+            margin-top: 40px; /* Add space above footer */
         }
 
         .footer-content {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
-            margin-bottom: 10px;
+            justify-content: space-around; /* Better distribution */
+            max-width: 1200px;
+            margin: 0 auto 15px auto; /* Center content */
+            padding: 0 20px;
         }
 
         .footer-column {
             flex: 1;
-            min-width: 200px;
+            min-width: 180px; /* Reduced min-width */
             margin: 10px;
+            text-align: left; /* Align text left */
         }
 
         .footer-column h3 {
             margin-bottom: 10px;
             font-size: 16px;
-            color: #3a7bd5;
+            color: #63b3ed; /* Lighter blue */
+            font-weight: 500;
         }
 
         .footer-column ul {
@@ -297,13 +411,14 @@
         }
 
         .footer-column ul li {
-            margin: 5px 0;
+            margin: 6px 0; /* Increased spacing */
         }
 
         .footer-column ul li a {
             text-decoration: none;
-            color: white;
+            color: #e2e8f0; /* Lighter gray */
             transition: color 0.3s ease;
+            font-size: 13px;
         }
 
         .footer-column ul li a:hover {
@@ -312,110 +427,194 @@
 
         .copyright {
             font-size: 12px;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.6); /* Slightly more visible */
+            margin-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 15px;
         }
-        
+
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .chat-container {
-                margin: 100px auto 30px;
-                height: calc(100vh - 180px);
+                margin: 90px auto 30px; /* Reduced top margin */
+                height: calc(100vh - 150px); /* Adjust height */
                 border-radius: 0;
+                box-shadow: none;
             }
-            
+
+            .map-section {
+                margin: 20px 10px; /* Adjust margin for smaller screens */
+                padding: 15px;
+            }
+
+            #map-container {
+                height: 300px;
+            }
+
             .header-content {
-                padding: 10px 0;
+                padding: 10px 15px; /* Adjust padding */
             }
-            
-            .logo {
+             .logo {
                 font-size: 20px;
             }
-            
+             nav ul li {
+                 margin: 0 8px; /* Reduce nav spacing */
+            }
+            nav ul li a {
+                 font-size: 14px;
+            }
+            .sign-in-btn {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+
             .message {
                 max-width: 90%;
+                padding: 10px 15px;
+            }
+             .chat-input {
+                padding: 10px 15px;
+            }
+            .chat-input input {
+                padding: 10px 14px;
+            }
+            .send-button, .camera-button {
+                width: 36px;
+                height: 36px;
+            }
+            .footer-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .footer-column {
+                 min-width: unset;
+                 width: 80%;
+                 text-align: center;
+            }
+            .info-box {
+                max-width: 200px;
+                bottom: 15px;
+                left: 15px;
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+             .legend-icon {
+                width: 12px;
+                height: 12px;
             }
         }
 
+        /* Patient Info Button & Modal Styles */
         .patient-info-btn {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent */
             color: #3a7bd5;
-            border: 1px solid #3a7bd5;
+            border: none; /* Remove border */
             border-radius: 20px;
             padding: 6px 16px;
-            font-size: 14px;
+            font-size: 13px; /* Slightly smaller */
             font-weight: 500;
             margin-left: 15px;
             cursor: pointer;
-            transition: background 0.2s, color 0.2s;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
         }
         .patient-info-btn:hover {
-            background: #3a7bd5;
-            color: #fff;
+            background: #fff;
+            color: #005fa3;
+             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.5); /* Darker overlay */
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 2000;
+            backdrop-filter: blur(3px); /* Add blur effect */
+            padding: 15px; /* Add padding for small screens */
         }
         .modal-content {
             background: #fff;
             border-radius: 12px;
             padding: 32px 28px 24px 28px;
-            min-width: 320px;
-            max-width: 90vw;
+            width: 100%; /* Make width flexible */
+            min-width: 300px; /* Keep min-width */
+            max-width: 500px; /* Increased max-width */
             box-shadow: 0 8px 32px rgba(0,0,0,0.18);
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px; /* Reduced gap */
+            animation: modalFadeIn 0.3s ease-out;
         }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .modal-content h2 {
             margin-bottom: 10px;
             color: #3a7bd5;
             font-size: 20px;
             font-weight: 600;
+            text-align: center;
         }
         .modal-content label {
             display: flex;
             flex-direction: column;
             font-size: 14px;
-            margin-bottom: 10px;
+            margin-bottom: 5px; /* Reduced margin */
             color: #333;
+            font-weight: 500; /* Make labels slightly bolder */
         }
         .modal-content input,
         .modal-content select,
         .modal-content textarea {
             margin-top: 4px;
-            padding: 8px 10px;
+            padding: 10px 12px; /* Increased padding */
             border-radius: 6px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid #ccc; /* Slightly darker border */
             font-size: 14px;
-            background: #f8f9fa;
+            background: #fff; /* White background */
             resize: vertical;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
+         .modal-content input:focus,
+        .modal-content select:focus,
+        .modal-content textarea:focus {
+             outline: none;
+             border-color: #3a7bd5;
+             box-shadow: 0 0 0 2px rgba(58, 123, 213, 0.2);
+        }
+
         .modal-content textarea {
-            min-height: 48px;
+            min-height: 60px; /* Adjusted height */
             max-height: 120px;
         }
         .modal-actions {
             display: flex;
             justify-content: flex-end;
             gap: 10px;
-            margin-top: 10px;
+            margin-top: 15px; /* Increased margin */
         }
         .modal-actions button {
-            padding: 7px 18px;
-            border-radius: 18px;
+            padding: 8px 20px; /* Increased padding */
+            border-radius: 20px; /* More rounded */
             border: none;
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
-            background: #3a7bd5;
-            color: #fff;
-            transition: background 0.2s;
+             transition: background 0.2s, transform 0.1s;
+        }
+        .modal-actions button[type="submit"] {
+             background: #3a7bd5;
+             color: #fff;
+        }
+         .modal-actions button[type="submit"]:hover {
+            background: #005fa3;
         }
         .modal-actions button[type="button"] {
             background: #e0e0e0;
@@ -424,9 +623,49 @@
         .modal-actions button[type="button"]:hover {
             background: #bdbdbd;
         }
-        .modal-actions button[type="submit"]:hover {
-            background: #005fa3;
+        .modal-actions button:active {
+            transform: scale(0.97);
         }
+
+        /* Camera Modal Specific Styles */
+        .camera-preview {
+            width: 100%;
+            background: #222; /* Darker background */
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            position: relative;
+            min-height: 200px; /* Ensure it has some height */
+            display: flex; /* Center video */
+            justify-content: center;
+            align-items: center;
+        }
+        .camera-preview video {
+            display: block; /* Remove extra space below video */
+            width: 100%;
+            height: auto; /* Maintain aspect ratio */
+            max-height: 400px; /* Limit video height */
+        }
+        .captured-image-preview {
+             max-width: 100%;
+             max-height: 300px; /* Limit preview height */
+             border-radius: 8px;
+             margin-bottom: 15px;
+             border: 1px solid #ddd;
+        }
+        .analysis-indicator {
+             text-align: center;
+             padding: 30px 10px;
+             color: #555;
+        }
+         .analysis-indicator .typing-indicator {
+             margin: 0 auto 10px auto; /* Center typing dots */
+        }
+         .analysis-indicator p {
+            font-size: 14px;
+            font-style: italic;
+        }
+
     </style>
 </head>
 <body>
@@ -436,7 +675,7 @@
             <div class="container">
                 <div class="header-content">
                     <div class="logo">
-                        <img src="../static/logo.png" alt="Diagnosium Logo">
+                        <img src="../static/logo.png" alt="Diagnosium Logo"> <!-- Make sure this path is correct -->
                         Diagnosium
                     </div>
                     <nav>
@@ -447,62 +686,99 @@
                             <li><a href="/about">About</a></li>
                         </ul>
                     </nav>
+                    <!-- Assuming you have a sign-in button -->
                     <button class="sign-in-btn" @click="signIn">Sign In</button>
                 </div>
             </div>
         </header>
 
-        <!-- Chat Interface -->
-        <div class="container">
+        <!-- Main Content Area -->
+        <div class="container main-content"> <!-- Added main-content class for clarity -->
+
+            <!-- Chat Interface -->
             <div class="chat-container">
                 <div class="chat-header">
                     <div>Diagnosium Assistant</div>
                     <div class="status">[[ botStatus ]]</div>
                     <button class="patient-info-btn" @click="showPatientPopup = true">Patient Info</button>
                 </div>
-                
+
                 <div class="chat-messages" ref="chatMessages">
-                    <div v-if="messages.length === 0" class="initial-message">
-                        <img src="../static/logo.png" alt="Diagnosium Logo" class="bot-avatar">
-                        <div class="bot-message">
-                            How can I help you today? Ask me anything about diagnostics.
-                        </div>
+                     <!-- Initial Welcome Message -->
+                    <div v-if="messages.length === 0 && !isTyping" class="message bot-message initial-message">
+                         <img src="../static/logo.png" alt="Bot" class="bot-avatar">
+                         <div class="message-content">
+                            How can I help you today? You can ask me about symptoms, find nearby facilities, or scan medication using the camera icon.
+                         </div>
                     </div>
-                    
-                    <div v-for="(message, index) in messages" :key="index" 
+
+                    <!-- Chat Messages Loop -->
+                    <div v-for="(message, index) in messages" :key="index"
                          :class="['message', message.sender === 'user' ? 'user-message' : 'bot-message']">
-                        <img v-if="message.sender === 'bot'" src="../static/logo.png" alt="Diagnosium Logo" class="bot-avatar">
+                        <img v-if="message.sender === 'bot'" src="../static/logo.png" alt="Bot" class="bot-avatar">
                         <div class="message-content">
-                            [[ message.text ]]
+                            <span v-html="message.text"></span> <!-- Use v-html if bot response might contain simple HTML like line breaks -->
                             <span class="timestamp">[[ message.time ]]</span>
                         </div>
                     </div>
-                    
-                    <div v-if="isTyping" class="typing-indicator">
-                        <img src="../static/logo.png" alt="Diagnosium Logo" class="bot-avatar">
-                        <span></span>
-                        <span></span>
-                        <span></span>
+
+                    <!-- Typing Indicator -->
+                    <div v-if="isTyping" class="typing-indicator bot-message"> <!-- Added bot-message class for consistency -->
+                        <img src="../static/logo.png" alt="Bot" class="bot-avatar">
+                         <div class="message-content">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                         </div>
                     </div>
                 </div>
-                
+
+                <!-- Chat Input Area -->
                 <div class="chat-input">
-                    <input 
-                        type="text" 
-                        v-model="userInput" 
-                        placeholder="Type your message here..." 
+                    <input
+                        type="text"
+                        v-model="userInput"
+                        placeholder="Type your message or use the camera..."
                         @keyup.enter="sendMessage"
-                        :disabled="isTyping"
+                        :disabled="isTyping || isAnalyzing"
+                        ref="inputField"
                     >
-                    <button class="send-button" @click="sendMessage" :disabled="isTyping">
+                    <!-- Camera Button - Correctly placed here -->
+                    <button class="camera-button" @click="openCamera" title="Scan Medication" :disabled="isTyping || isAnalyzing">
+                        📷
+                    </button>
+                    <button class="send-button" @click="sendMessage" :disabled="isTyping || !userInput.trim()">
                         ➤
                     </button>
                 </div>
             </div>
-        </div>
+
+            <!-- Map Section -->
+            <div class="map-section">
+                <h2 style="margin-bottom: 15px; color: #3a7bd5; font-weight: 600;">Nearby Medical Facilities</h2>
+                <div id="map-container"></div>
+                <div class="info-box">
+                    <h3 style="font-size: 14px; margin-bottom: 8px; font-weight: 600; color: #333;">Map Legend</h3>
+                    <div class="legend">
+                        <div class="legend-icon you-icon"></div>
+                        <div>Your Location</div>
+                    </div>
+                    <div class="legend">
+                        <div class="legend-icon pharmacy-icon"></div>
+                        <div>Pharmacies</div>
+                    </div>
+                    <div class="legend">
+                        <div class="legend-icon hospital-icon"></div>
+                        <div>Hospitals/Clinics</div>
+                    </div>
+                    <div id="status">Loading map...</div>
+                </div>
+            </div>
+
+        </div> <!-- End .main-content -->
 
         <!-- Patient Info Popup Modal -->
-        <div v-if="showPatientPopup" class="modal-overlay">
+        <div v-if="showPatientPopup" class="modal-overlay" @click.self="showPatientPopup = false"> <!-- Close on overlay click -->
             <div class="modal-content">
                 <h2>Patient Information</h2>
                 <form @submit.prevent="submitPatientInfo">
@@ -512,34 +788,124 @@
                     </label>
                     <label>
                         Age:
-                        <input type="number" v-model="patientInfo.age" min="0" required>
+                        <input type="number" v-model.number="patientInfo.age" min="0" required> <!-- Use v-model.number -->
                     </label>
                     <label>
                         Gender:
                         <select v-model="patientInfo.gender" required>
-                            <option disabled value="">Select</option>
-                            <option>Male</option>
-                            <option>Female</option>
-                            <option>Other</option>
+                            <option disabled value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                            <option value="Prefer not to say">Prefer not to say</option>
                         </select>
                     </label>
                     <label>
-                        Symptoms:
-                        <textarea v-model="patientInfo.symptoms" required></textarea>
+                        Known Allergies / Conditions:
+                        <textarea v-model="patientInfo.symptoms" placeholder="e.g., Penicillin allergy, Diabetes Type 2"></textarea>
                     </label>
                     <div class="modal-actions">
-                        <button type="submit">Submit</button>
+                        <button type="submit">Save Info</button>
                         <button type="button" @click="showPatientPopup = false">Cancel</button>
                     </div>
                 </form>
             </div>
         </div>
 
-    </div>
+        <!-- Camera Modal - Correctly placed here -->
+        <div v-if="showCameraModal" class="modal-overlay" @click.self="closeCamera"> <!-- Close on overlay click -->
+            <div class="modal-content" style="max-width: 550px;"> <!-- Slightly wider modal for camera -->
+                <h2>Scan Medication</h2>
+
+                <!-- Show Loading Indicator OR Camera Preview/Captured Image -->
+                <div v-if="isAnalyzing" class="analysis-indicator">
+                    <div class="typing-indicator" style="align-self: center; background: none;">
+                         <img src="../static/logo.png" alt="Bot" class="bot-avatar" style="margin-right: 0;">
+                         <span></span><span></span><span></span>
+                    </div>
+                    <p>Analyzing medication, please wait...</p>
+                </div>
+
+                <div v-else> <!-- Show camera/preview only when not analyzing -->
+                    <div class="camera-preview" v-show="!capturedImage"> <!-- Use v-show to keep video element in DOM -->
+                        <video ref="video" autoplay playsinline muted style="width: 100%; border-radius: 8px;"></video> <!-- Added muted -->
+                        <canvas ref="canvas" style="display: none;"></canvas>
+                    </div>
+
+                    <!-- Buttons below camera/preview -->
+                     <div style="text-align: center; margin: 15px 0;">
+                         <!-- Show Capture button only if no image is captured -->
+                         <button v-if="!capturedImage" @click="captureImage" style="background: #3a7bd5; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 15px;">
+                            Capture Image
+                         </button>
+                    </div>
+
+                    <!-- Show captured image preview and actions -->
+                    <div v-if="capturedImage" style="text-align: center;">
+                        <p style="margin-bottom: 10px; font-size: 14px; color: #555;">Image Preview:</p>
+                        <img :src="capturedImage" alt="Captured Medication" class="captured-image-preview">
+                        <div class="modal-actions" style="justify-content: center;"> <!-- Center actions -->
+                            <button type="button" @click="sendCapturedImage" style="background: #4CAF50;"> <!-- Green for Analyze -->
+                                ✔ Analyze
+                            </button>
+                            <button type="button" @click="retakeImage">
+                                ↺ Retake
+                            </button>
+                            <button type="button" @click="closeCamera">
+                                ✖ Cancel
+                            </button>
+                        </div>
+                    </div>
+                     <!-- Only show cancel button if no image captured yet -->
+                     <div v-if="!capturedImage" class="modal-actions" style="justify-content: center;">
+                           <button type="button" @click="closeCamera">Cancel</button>
+                     </div>
+                </div> <!-- End v-else (not analyzing) -->
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+       <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-column">
+                        <h3>Diagnosium</h3>
+                        <ul>
+                            <li><a href="/about">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Support</h3>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="/privacy">Privacy Policy</a></li>
+                            <li><a href="/terms">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Connect</h3>
+                         <ul>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="copyright">
+                    © 2023 Diagnosium. All rights reserved. This service is for informational purposes only and does not constitute medical advice.
+                </div>
+            </div>
+        </footer>
+
+    </div> <!-- End #app -->
 
     <script>
         // Centralize API configuration
-        const API_BASE_URL = 'http://localhost:8000';
+        const API_BASE_URL = 'http://localhost:8000'; // Ensure this is your actual backend URL
 
         new Vue({
             el: '#app',
@@ -549,170 +915,665 @@
                 messages: [],
                 isTyping: false,
                 botStatus: 'Online',
-                apiEndpoint: `${API_BASE_URL}/message`, // Use the centralized URL
+                apiEndpoint: `${API_BASE_URL}/message`, // API for text chat
                 showPatientPopup: false,
-                patientInfo: {
+                patientInfo: { // Keep patient info separate
                     name: '',
-                    age: '',
+                    age: null, // Initialize age as null or 0
                     gender: '',
-                    symptoms: ''
+                    symptoms: '' // Renamed from 'symptoms' for clarity if needed, or keep as is. Maybe 'conditions_allergies'?
                 },
+                // Camera State - moved to top level
+                showCameraModal: false,
+                capturedImage: null, // Holds the base64 image data URL
+                isAnalyzing: false, // Tracks if the image is being sent/processed
+                stream: null       // Holds the MediaStream object
             },
             methods: {
                 signIn() {
-                    window.location.href = "/login";
+                    // Redirect to your login page or trigger a login modal
+                    console.log("Sign In clicked");
+                     window.location.href = "/login"; // Example redirect
                 },
                 sendMessage() {
-                    // Don't send empty messages
-                    if (!this.userInput.trim()) return;
-                    
-                    // Add user message
+                    const trimmedInput = this.userInput.trim();
+                    if (!trimmedInput || this.isTyping || this.isAnalyzing) return;
+
                     const userMessage = {
-                        text: this.userInput,
+                        text: trimmedInput,
                         sender: 'user',
                         time: this.getCurrentTime()
                     };
                     this.messages.push(userMessage);
-                    
-                    // Clear input field
-                    const userQuestion = this.userInput;
-                    this.userInput = '';
-                    
-                    // Show typing indicator
+                    this.scrollToBottom(); // Scroll after adding user message
+
+                    const userQuestion = trimmedInput;
+                    this.userInput = ''; // Clear input *after* capturing value
+
                     this.isTyping = true;
                     this.botStatus = 'Typing...';
-                    
-                    // fetch the bot response
+
                     this.getBotResponse(userQuestion);
-                    
                 },
-                
+
                 async getBotResponse(question) {
-                    // Use AbortController for timeout/cancellation
                     const controller = new AbortController();
                     const signal = controller.signal;
-                    
-                    // Set a timeout to abort the fetch request
-                    const timeoutId = setTimeout(() => {
-                        controller.abort(); // Abort the fetch request
-                        if (this.isTyping) {
-                            this.isTyping = false;
-                            this.botStatus = 'Online';
-                            this.addBotMessage("I'm sorry, the request timed out. Please try again later.");
-                        }
-                    }, 15000); // 15 seconds timeout
+                    const requestTimeout = 20000; // 20 seconds timeout
 
-                    // Prepare fetch request options
+                    const timeoutId = setTimeout(() => {
+                        controller.abort();
+                        // No need to check isTyping here, the finally block handles it
+                    }, requestTimeout);
+
                     const requestOptions = {
-                        method: 'POST', // Explicitly using POST method
+                        method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
-                            // If authentication is needed, add Authorization header here:
-                            // 'Authorization': `Bearer ${your_auth_token}` 
+                            'Content-Type': 'application/json',
+                             // Add any required Auth headers if needed, e.g.,
+                             // 'Authorization': `Bearer ${your_jwt_token}`
                         },
-                        body: JSON.stringify({ content: question }),
-                        signal: signal // Pass the abort signal
+                        // Send patient info context along with the message if available
+                        body: JSON.stringify({
+                             content: question,
+                             patient_context: this.patientInfo // Send relevant patient data
+                        }),
+                        signal: signal
                     };
 
                     try {
                         const response = await fetch(this.apiEndpoint, requestOptions);
-                        clearTimeout(timeoutId); // Clear the timeout if fetch completes
+                        clearTimeout(timeoutId); // Clear timeout if response received
 
                         if (!response.ok) {
-                            // Handle HTTP errors (4xx, 5xx)
                             console.error('API Error Status:', response.status, response.statusText);
+                            let errorMsg = `Sorry, there was a server error (${response.status}). Please try again later.`;
                             if (response.status === 429) {
-                                this.addBotMessage("You've sent too many requests. Please wait a moment before trying again.");
+                                errorMsg = "You've sent too many requests. Please wait a moment before trying again.";
                             } else {
-                                this.addBotMessage(`Sorry, there was a server error (${response.status}). Please try again later.`);
+                                // Attempt to read error message from response body
+                                try {
+                                     const errorData = await response.json();
+                                     if(errorData && errorData.detail) {
+                                         errorMsg = `Error: ${errorData.detail}`;
+                                     }
+                                } catch(e) { /* Ignore if body isn't JSON */ }
                             }
+                             this.addBotMessage(errorMsg);
                         } else {
-                            // Process the successful response
                             const data = await response.json();
                             if (data && typeof data.answer !== 'undefined') {
-                                this.addBotMessage(data.answer);
+                                // Process potential line breaks from backend
+                                const formattedAnswer = data.answer.replace(/\n/g, '<br>');
+                                this.addBotMessage(formattedAnswer);
                             } else {
                                 console.error('Invalid response structure:', data);
-                                this.addBotMessage("I received a response but couldn't understand it. Please try again.");
+                                this.addBotMessage("I received an unexpected response from the server. Please try again.");
                             }
                         }
                     } catch (error) {
-                        clearTimeout(timeoutId); // Clear timeout on error
-                        console.error('Fetch API Error:', error); // Log the full error
+                        clearTimeout(timeoutId); // Clear timeout on error too
+                        console.error('Fetch API Error:', error);
 
                         if (error.name === 'AbortError') {
-                            // Timeout error handled by the setTimeout callback, do nothing extra here
-                            // Or add specific logging if needed: console.log('Fetch aborted due to timeout.');
-                        } else {
-                            // Handle network errors or other fetch issues
-                            this.addBotMessage("Sorry, I couldn't connect to the server. Please check your connection and try again.");
+                             this.addBotMessage("The request timed out as the server took too long to respond. Please try again.");
+                        } else if (error instanceof TypeError) {
+                             this.addBotMessage("Sorry, I couldn't connect to the server. Please check the API URL and ensure the server is running.");
+                        }
+                         else {
+                            this.addBotMessage("An unexpected error occurred while trying to connect. Please check your network connection and try again.");
                         }
                     } finally {
-                        // Ensure state is reset regardless of success/failure/timeout
-                        // Check if still typing, as timeout might have already reset it
-                        if (this.isTyping) { 
-                           this.isTyping = false;
-                           this.botStatus = 'Online';
-                        }
+                        // Always reset typing status, regardless of success or failure
+                        this.isTyping = false;
+                        this.botStatus = 'Online';
+                         this.$nextTick(() => { // Ensure input is focusable after response/error
+                            this.$refs.inputField.focus();
+                         });
                     }
                 },
-                
+
                 addBotMessage(text) {
                     const botMessage = {
-                        text: text,
+                        text: text, // Text can now contain <br> tags
                         sender: 'bot',
                         time: this.getCurrentTime()
                     };
                     this.messages.push(botMessage);
-                    
-                    // Scroll to bottom after message is added and rendered
-                    this.$nextTick(() => {
-                        this.scrollToBottom();
-                    });
+                    this.scrollToBottom(); // Scroll after adding bot message
                 },
-                
+
                 getCurrentTime() {
                     const now = new Date();
-                    return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }); // Use AM/PM
                 },
-                
+
                 scrollToBottom() {
-                    const chatContainer = this.$refs.chatMessages;
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                    this.$nextTick(() => {
+                        const chatContainer = this.$refs.chatMessages;
+                        if (chatContainer) {
+                             // Use smooth scroll for better UX
+                            chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
+                        }
+                    });
                 },
+
                 async submitPatientInfo() {
+                     console.log("Submitting patient info:", this.patientInfo);
                     try {
-                        // You may want to change the endpoint as needed
+                        // Optional: Send patient info to a specific endpoint if needed
+                        // For now, we just save it locally and potentially send with chat messages
+                         alert('Patient info updated locally!'); // Simple confirmation
+                         // Example: Send to backend if needed
+                        /*
                         const response = await fetch(`${API_BASE_URL}/patient-info`, {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
+                            headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(this.patientInfo)
                         });
                         if (!response.ok) {
-                            alert('Failed to save patient info.');
+                            alert('Failed to save patient info to server.');
                         } else {
                             alert('Patient info saved!');
-                            this.showPatientPopup = false;
                         }
+                        */
+                        this.showPatientPopup = false; // Close modal on success
                     } catch (e) {
-                        alert('Error sending patient info.');
+                        console.error("Error submitting patient info:", e);
+                        alert('An error occurred while saving patient info.');
                     }
                 },
+
+                // --- Camera Methods ---
+                async openCamera() {
+                    this.showCameraModal = true;
+                    this.capturedImage = null; // Reset previous capture
+                    this.isAnalyzing = false; // Reset analysis state
+
+                    // Wait for the modal DOM to be ready
+                    await this.$nextTick();
+
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                        this.addBotMessage("Camera access is not supported by your browser or device.");
+                        this.closeCamera();
+                        return;
+                    }
+
+                    try {
+                        // Prioritize back camera ('environment')
+                        this.stream = await navigator.mediaDevices.getUserMedia({
+                            video: { facingMode: 'environment' }
+                        });
+                    } catch (err) {
+                         console.warn("Could not get environment camera, trying default:", err);
+                         try {
+                            // Fallback to any available camera
+                            this.stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                         } catch (finalErr) {
+                            console.error("Camera access error:", finalErr);
+                            let errorMsg = "Could not access the camera. ";
+                            if (finalErr.name === 'NotAllowedError' || finalErr.name === 'PermissionDeniedError') {
+                                errorMsg += "Please grant camera permissions in your browser settings.";
+                            } else if (finalErr.name === 'NotFoundError' || finalErr.name === 'DevicesNotFoundError') {
+                                 errorMsg += "No camera found on this device.";
+                            } else {
+                                 errorMsg += "An unexpected error occurred.";
+                            }
+                            this.addBotMessage(errorMsg);
+                            this.closeCamera();
+                            return; // Stop execution if camera fails
+                         }
+                    }
+
+                    // If stream obtained successfully
+                    if (this.stream && this.$refs.video) {
+                        this.$refs.video.srcObject = this.stream;
+                        this.$refs.video.play().catch(e => console.error("Video play error:", e)); // Handle autoplay issues
+                    } else {
+                         this.addBotMessage("Failed to initialize the camera view.");
+                         this.closeCamera();
+                    }
+                },
+
+                captureImage() {
+                    const video = this.$refs.video;
+                    const canvas = this.$refs.canvas;
+
+                    if (!video || !canvas || !this.stream || video.readyState < video.HAVE_METADATA) {
+                        console.error("Video stream not ready for capture.");
+                        this.addBotMessage("Camera not ready, please try again.");
+                        return;
+                    }
+
+                    // Set canvas dimensions based on the actual video dimensions
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+
+                    // Draw the current video frame onto the canvas
+                    const context = canvas.getContext('2d');
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    // Get the image data as JPEG (more common for photos)
+                    try {
+                         this.capturedImage = canvas.toDataURL('image/jpeg', 0.9); // 0.9 quality
+                         console.log("Image captured, size:", Math.round(this.capturedImage.length * 3/4 / 1024), "KB");
+                    } catch (e) {
+                         console.error("Error converting canvas to data URL:", e);
+                         this.addBotMessage("Failed to capture image properly.");
+                         this.capturedImage = null;
+                    }
+                },
+
+                retakeImage() {
+                    this.capturedImage = null;
+                    // Ensure video is playing if it was paused
+                     if (this.$refs.video && this.$refs.video.paused) {
+                         this.$refs.video.play().catch(e => console.error("Video play error:", e));
+                     }
+                },
+
+                closeCamera() {
+                    if (this.stream) {
+                        this.stream.getTracks().forEach(track => track.stop());
+                        this.stream = null;
+                         // Also clear srcObject to remove the last frame in some browsers
+                         if (this.$refs.video) {
+                            this.$refs.video.srcObject = null;
+                         }
+                        console.log("Camera stream stopped.");
+                    }
+                    this.showCameraModal = false;
+                    this.capturedImage = null;
+                    this.isAnalyzing = false;
+                },
+
+                async sendCapturedImage() {
+                    if (!this.capturedImage) return;
+
+                    this.isAnalyzing = true; // Show loading indicator
+
+                    try {
+                        // Convert base64 image to blob
+                        const fetchRes = await fetch(this.capturedImage);
+                        const blob = await fetchRes.blob();
+
+                        // Create form data to send to API
+                        const formData = new FormData();
+                        // Use a generic name, backend should handle it
+                        formData.append('image', blob, 'medication_scan.jpg');
+
+                        // Send to your medication analysis API endpoint
+                        const response = await fetch(`${API_BASE_URL}/analyze-medication`, {
+                            method: 'POST',
+                            body: formData
+                            // NO 'Content-Type' header here - browser sets it for FormData
+                             // Add Auth headers if required by the API
+                             // headers: { 'Authorization': `Bearer ${your_token}` }
+                        });
+
+                        // Add user message indicating image was sent
+                        const userMsg = {
+                            text: '(Sent medication image for analysis)',
+                            sender: 'user',
+                            time: this.getCurrentTime()
+                        };
+                        this.messages.push(userMsg);
+
+
+                        if (!response.ok) {
+                            console.error('Medication API Error Status:', response.status, response.statusText);
+                            let errorMsg = `Analysis failed (${response.status}).`;
+                             try {
+                                 const errorData = await response.json();
+                                 if(errorData && errorData.detail) { errorMsg += ` ${errorData.detail}`; }
+                             } catch(e) { /* Ignore */ }
+                            throw new Error(errorMsg); // Throw error to be caught below
+                        }
+
+                        const result = await response.json();
+                        console.log("Analysis result:", result);
+
+                        // Construct bot response based on API result
+                        let botResponse = "I couldn't identify the medication from the image."; // Default
+                        if (result && result.medicationName) {
+                             botResponse = `Based on the image, this looks like: <strong>${result.medicationName}</strong>.`;
+                            if(result.description) {
+                                botResponse += `<br>${result.description}`;
+                            }
+                             if(result.warnings) {
+                                botResponse += `<br><strong>Warnings:</strong> ${result.warnings}`;
+                            }
+                             // Add more fields as needed from your API response
+                        } else if (result && result.message) {
+                            // Handle cases where API returns a message instead of identification
+                            botResponse = result.message;
+                        }
+
+                        this.addBotMessage(botResponse);
+
+                    } catch (error) {
+                        console.error("Error analyzing medication:", error);
+                        this.addBotMessage(`Sorry, I encountered an error analyzing the medication image. ${error.message || 'Please try again.'}`);
+                    } finally {
+                        this.isAnalyzing = false;
+                        this.closeCamera(); // Close modal after analysis (success or fail)
+                    }
+                }
             },
-            updated() {
-                // Ensure chat is scrolled to bottom when new messages arrive
-                this.scrollToBottom();
+            watch: {
+                 // Watch messages array changes to scroll down
+                 messages: function() {
+                    this.scrollToBottom();
+                 }
             },
             mounted() {
-                // Focus the input field when page loads
+                // Focus input field on component mount
                 this.$nextTick(() => {
-                    const inputField = document.querySelector('.chat-input input');
-                    if (inputField) inputField.focus();
+                    this.$refs.inputField.focus();
                 });
+                 // Add initial welcome message slightly delayed if desired
+                 /* setTimeout(() => {
+                    if (this.messages.length === 0) {
+                       this.addBotMessage("How can I help you today? Ask me anything about diagnostics.");
+                    }
+                 }, 500); */
+            },
+             beforeDestroy() {
+                // Ensure camera stream is stopped if component is destroyed
+                this.closeCamera();
             }
         });
+
+
+        // --- Map JavaScript (Using the improved version from previous answer) ---
+        let map;
+        let service;
+        let infowindow;
+        let currentPosition; // User's current latitude/longitude
+        let markers = []; // To keep track of markers
+
+        // --- IMPORTANT ---
+        // 1. Ensure your Google Maps API Key is correct.
+        // 2. Make sure "Maps JavaScript API" AND "Places API" are enabled.
+        // 3. Ensure billing is enabled if required.
+        const GOOGLE_MAPS_API_KEY = "AIzaSyCoSbpwL2kb_FrZG5Poq8OajO4l-PAEyps"; // Use your actual key
+
+        function initMap() {
+            console.log("initMap called");
+            const defaultLocation = { lat: 40.7128, lng: -74.0060 }; // Default: NYC
+            const statusElement = document.getElementById('status');
+            if (!statusElement) {
+                console.error("Map status element not found!");
+                return;
+            }
+
+            infowindow = new google.maps.InfoWindow();
+
+            map = new google.maps.Map(document.getElementById("map-container"), {
+                center: defaultLocation,
+                zoom: 12,
+                mapId: 'DEMO_MAP_ID', // Optional: For cloud styling
+                mapTypeControl: false, // Simplify controls
+                streetViewControl: false
+            });
+
+            statusElement.textContent = "Attempting to get your location...";
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        currentPosition = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                        };
+                        console.log("Location found:", currentPosition);
+                        statusElement.textContent = "Location found! Searching...";
+                        map.setCenter(currentPosition);
+                        map.setZoom(14);
+
+                        new google.maps.Marker({
+                            position: currentPosition,
+                            map: map,
+                            title: "Your Location",
+                            icon: {
+                                path: google.maps.SymbolPath.CIRCLE,
+                                scale: 8,
+                                fillColor: "#4285F4",
+                                fillOpacity: 1,
+                                strokeWeight: 2,
+                                strokeColor: "#FFFFFF",
+                            },
+                            zIndex: 10
+                        });
+
+                        service = new google.maps.places.PlacesService(map);
+                        findNearbyPlaces(currentPosition, 5000);
+                    },
+                    (error) => {
+                        handleLocationError(true, error, defaultLocation, statusElement);
+                        currentPosition = defaultLocation; // Use default if error
+                        service = new google.maps.places.PlacesService(map);
+                        findNearbyPlaces(currentPosition, 5000);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 8000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                handleLocationError(false, null, defaultLocation, statusElement);
+                currentPosition = defaultLocation; // Use default if no geolocation support
+                service = new google.maps.places.PlacesService(map);
+                findNearbyPlaces(currentPosition, 5000);
+            }
+        }
+
+        function handleLocationError(browserHasGeolocation, error, pos, statusElement) {
+             let message = "Geolocation error: ";
+             if (error) {
+                switch(error.code) {
+                    case error.PERMISSION_DENIED: message += "Permission denied."; break;
+                    case error.POSITION_UNAVAILABLE: message += "Location unavailable."; break;
+                    case error.TIMEOUT: message += "Request timed out."; break;
+                    default: message += "Unknown error."; break;
+                }
+            } else if (!browserHasGeolocation) {
+                 message = "Error: Browser doesn't support geolocation.";
+            }
+            console.error(message);
+            statusElement.textContent = message + " Using default.";
+            map.setCenter(pos);
+        }
+
+        function performSearch(location, type, keyword, radius) {
+            return new Promise((resolve, reject) => {
+                const request = { location, radius, types: [type], keyword }; // types should be array
+                console.log(`Searching for ${type} within ${radius}m`);
+                if (!service) {
+                     console.error("PlacesService not initialized yet.");
+                     return reject("Service not ready");
+                }
+                service.nearbySearch(request, (results, status, pagination) => {
+                    console.log(`Search status for ${type}:`, status);
+                    if (status === google.maps.places.PlacesServiceStatus.OK || status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+                        resolve(results || []);
+                    } else {
+                        reject({ status: status, type: type });
+                    }
+                });
+            });
+        }
+
+       async function findNearbyPlaces(location, initialRadius) {
+            const statusElement = document.getElementById('status');
+            let radius = initialRadius;
+            const maxRadius = 20000; // 20km
+
+            // Clear previous markers
+            markers.forEach(marker => marker.setMap(null));
+            markers = [];
+
+            let pharmacyResults = [];
+            let hospitalResults = [];
+
+            try {
+                statusElement.textContent = `Searching within ${radius/1000}km...`;
+
+                 // Use Promise.allSettled to handle potential errors in one search without stopping the other
+                const results = await Promise.allSettled([
+                    performSearch(location, 'pharmacy', 'pharmacy', radius),
+                    performSearch(location, 'hospital', 'hospital OR clinic', radius) // Broaden hospital search
+                ]);
+
+                if (results[0].status === 'fulfilled') pharmacyResults = results[0].value;
+                else console.error("Pharmacy search failed:", results[0].reason);
+
+                if (results[1].status === 'fulfilled') hospitalResults = results[1].value;
+                else console.error("Hospital search failed:", results[1].reason);
+
+
+                let allPlaces = [...pharmacyResults, ...hospitalResults];
+                console.log("Initial search results:", allPlaces.length);
+
+                // Optional: Expand search if few results - Modify as needed
+                if (allPlaces.length < 5 && radius < maxRadius) { // Example: Expand if less than 5 results
+                    console.log("Few results, expanding search radius.");
+                    radius *= 2;
+                    statusElement.textContent = `Expanding search to ${radius/1000}km...`;
+                    const expandedResults = await Promise.allSettled([
+                       performSearch(location, 'pharmacy', 'pharmacy', radius),
+                       performSearch(location, 'hospital', 'hospital OR clinic', radius)
+                    ]);
+                    // Combine results carefully, avoiding duplicates if necessary (simple concat here)
+                    if (expandedResults[0].status === 'fulfilled') pharmacyResults = [...pharmacyResults, ...expandedResults[0].value];
+                     if (expandedResults[1].status === 'fulfilled') hospitalResults = [...hospitalResults, ...expandedResults[1].value];
+                     // Basic duplicate check based on place_id
+                     const placeIds = new Set();
+                     allPlaces = [...pharmacyResults, ...hospitalResults].filter(place => {
+                         if (!place.place_id || !placeIds.has(place.place_id)) {
+                            placeIds.add(place.place_id);
+                            return true;
+                         }
+                         return false;
+                     });
+                      console.log("Expanded search results:", allPlaces.length);
+                }
+
+                if (allPlaces.length === 0) {
+                     statusElement.textContent = `No facilities found within ${radius/1000}km.`;
+                     return;
+                }
+
+                // Create markers and calculate bounds
+                const bounds = new google.maps.LatLngBounds();
+                bounds.extend(location); // Include user's location
+
+                allPlaces.forEach(place => {
+                    let placeType = 'hospital'; // Default to hospital/clinic
+                    if (place.types.includes('pharmacy')) {
+                        placeType = 'pharmacy';
+                    }
+                    createMarker(place, placeType);
+                    if (place.geometry && place.geometry.location) {
+                        bounds.extend(place.geometry.location);
+                    }
+                });
+
+                 // Count distinct places after filtering
+                const finalPharmacyCount = allPlaces.filter(p => p.types.includes('pharmacy')).length;
+                const finalHospitalCount = allPlaces.length - finalPharmacyCount;
+                statusElement.textContent = `Found ${finalPharmacyCount} pharmacies, ${finalHospitalCount} hospitals/clinics.`;
+
+                map.fitBounds(bounds);
+                // Prevent over-zooming
+                 const listener = google.maps.event.addListenerOnce(map, 'idle', function() {
+                    if (map.getZoom() > 16) map.setZoom(16);
+                 });
+
+
+            } catch (error) { // Catch errors from performSearch if not using allSettled
+                console.error("Error during place search:", error);
+                let errorMsg = "Error searching.";
+                if (error && error.status) {
+                     errorMsg += ` (Status: ${error.status} for ${error.type})`;
+                     if (error.status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) errorMsg = "Search limit. Try later.";
+                     else if (error.status === google.maps.places.PlacesServiceStatus.REQUEST_DENIED) errorMsg = "Request denied. Check API key.";
+                }
+                statusElement.textContent = errorMsg;
+            }
+        }
+
+
+        function createMarker(place, type) {
+            if (!place.geometry || !place.geometry.location) {
+                 console.warn("Place missing geometry:", place.name);
+                 return;
+            }
+
+            const iconUrl = type === 'pharmacy'
+                ? 'https://maps.google.com/mapfiles/ms/icons/green-dot.png'
+                : 'https://maps.google.com/mapfiles/ms/icons/red-dot.png';
+
+            const marker = new google.maps.Marker({
+                map: map,
+                position: place.geometry.location,
+                title: place.name,
+                icon: iconUrl,
+                animation: google.maps.Animation.DROP
+            });
+
+            markers.push(marker);
+
+            google.maps.event.addListener(marker, "click", () => {
+                const destLat = place.geometry.location.lat();
+                const destLng = place.geometry.location.lng();
+                const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}`;
+
+                let content = `<div style="font-family: 'Poppins', sans-serif; max-width: 250px; font-size: 13px; line-height: 1.5;">`;
+                content += `<strong style="font-size: 1.1em; color: #333;">${place.name}</strong><br>`;
+                if (place.vicinity) {
+                    content += `${place.vicinity}<br>`;
+                }
+                 // Request Place Details for opening hours and phone number (requires Places API Details request - adds cost)
+                 // For simplicity, we stick to nearbySearch results here.
+                if (place.rating) {
+                     content += `Rating: ${place.rating} ★ (${place.user_ratings_total || 'N/A'})<br>`;
+                }
+                if (place.opening_hours) { // Check if opening_hours info is available from nearbySearch
+                     content += `Status: ${place.opening_hours.open_now ? '<span style="color: green;">Open Now</span>' : '<span style="color: red;">Closed</span>'}<br>`;
+                }
+                 content += `Type: ${type === 'pharmacy' ? 'Pharmacy' : 'Hospital/Clinic'}<br>`;
+                content += `<a href="${directionsUrl}" target="_blank" style="color: #3a7bd5; text-decoration: none; font-weight: 500; margin-top: 5px; display: inline-block;">Get Directions →</a>`;
+                content += `</div>`;
+
+                infowindow.setContent(content);
+                infowindow.open(map, marker);
+            });
+        }
+
+        // --- Load the Google Maps API ---
+        function loadGoogleMapsScript() {
+          const script = document.createElement('script');
+          // Using v=beta and libraries=marker allows for potentially newer marker features
+          script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places,marker&callback=initMap&v=beta`;
+          script.async = true;
+          script.defer = true; // defer ensures it executes after HTML parsing
+          script.onerror = () => {
+              console.error("Failed to load Google Maps script. Check API key, network, and console errors.");
+              const statusElement = document.getElementById('status');
+              if(statusElement) statusElement.textContent = "Error loading Google Maps.";
+              // Maybe display a more prominent error on the map container itself
+              const mapContainer = document.getElementById('map-container');
+              if(mapContainer) mapContainer.innerHTML = '<p style="text-align: center; padding: 20px; color: red;">Could not load map.</p>';
+          };
+          document.head.appendChild(script); // Append to head is standard practice
+        }
+
+       // Call the function to load the script - Ensure this runs after the rest of the page setup
+       // Use DOMContentLoaded to be safe
+       document.addEventListener('DOMContentLoaded', loadGoogleMapsScript);
+
     </script>
 </body>
 </html>
