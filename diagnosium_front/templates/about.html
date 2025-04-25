@@ -507,15 +507,16 @@
         <!-- About Section -->
         <section class="about-section">
             <div class="container">
-                <div class="about-container">
-                    <div class="about-image">
-                        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=1000" alt="Diagnosium Office">
+                <div class="about-container" style="justify-content: center;">
+                    <div class="about-image" style="max-width: 320px;">
+                        <img src="../static/404found.jpg" alt="404found Team Logo" style="object-fit: contain;">
                     </div>
                     <div class="about-content">
-                        <h2>Our Story</h2>
-                        <p>Diagnosium was founded in 2020 by a team of healthcare professionals and AI specialists who recognized the potential for artificial intelligence to revolutionize medical diagnostics.</p>
-                        <p>What started as a research project at a leading medical university has evolved into a comprehensive platform that combines <span class="highlight">advanced machine learning algorithms</span> with clinical expertise to provide accurate, timely diagnostic assistance.</p>
-                        <p>Today, Diagnosium serves healthcare providers and patients across the globe, constantly improving our technology to make healthcare more accessible, efficient, and precise.</p>
+                        <h2>About 404found</h2>
+                        <p>
+                            <strong>404found, failure was never an option</strong> is a team formed to participate in the <strong>doc.ai hackathon</strong> hosted by <strong>AINEC Scientific Club</strong> at our university.<br><br>
+                            We are a multidisciplinary group passionate about AI and healthcare innovation, collaborating to push the boundaries of diagnostic technology during this exciting event.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -558,25 +559,26 @@
         </section>
 
         <!-- Team Section -->
-        <section class="team-section">
+        <section class="team-section" id="team">
             <div class="container">
                 <div class="section-title">
-                    <h2>Meet Our Leadership Team</h2>
-                    <p>The passionate individuals behind Diagnosium who are dedicated to transforming healthcare diagnostics.</p>
+                    <h2>Meet Our Team</h2>
+                    <p>
+                        <strong>404found, failure was never an option</strong><br>
+                        A passionate team created to participate in the <strong>doc.ai hackathon</strong> hosted by <strong>AINEC Scientific Club</strong> at our university.
+                    </p>
                 </div>
-                
-                <div class="team-container">
-                    <div class="team-member" v-for="(member, index) in teamMembers" :key="index">
-                        <div class="member-image">
-                            <img :src="member.image" :alt="member.name">
+                <div class="team-container" style="justify-content: center;">
+                    <div class="team-member" style="width: 320px;">
+                        <div class="member-image" style="width: 220px; height: 220px;">
+                            <img src="../static/404found.jpg" alt="404found Team Logo" style="object-fit: contain;">
                         </div>
-                        <h3 class="member-name">[[ member.name ]]</h3>
-                        <p class="member-role">[[ member.role ]]</p>
-                        <p class="member-bio">[[ member.bio ]]</p>
-                        <div class="social-links">
-                            <a href="#" class="social-link">in</a>
-                            <a href="#" class="social-link">t</a>
-                        </div>
+                        <h3 class="member-name" style="margin-top: 20px;">404found</h3>
+                        <p class="member-role">Failure was never an option</p>
+                        <p class="member-bio">
+                            We are a multidisciplinary team united by our passion for AI and healthcare innovation. Our journey began with the doc.ai hackathon, where we joined forces under the AINEC Scientific Club to push the boundaries of diagnostic technology.
+                        </p>
+                        <!-- Optionally, add hackathon/club links here -->
                     </div>
                 </div>
             </div>
@@ -586,59 +588,24 @@
         <section class="contact-section">
             <div class="container">
                 <div class="section-title">
-                    <h2>Get in Touch</h2>
-                    <p>Have questions or want to learn more about Diagnosium? We'd love to hear from you.</p>
+                    <h2>Contact</h2>
+                    <p>For any inquiries, reach out to us at:</p>
                 </div>
-                
-                <div class="contact-container">
-                    <div class="contact-info">
-                        <ul class="contact-details">
+                <div class="contact-container" style="justify-content: center;">
+                    <div class="contact-info" style="text-align: center;">
+                        <ul class="contact-details" style="display: inline-block; text-align: left;">
                             <li>
-                                <div class="contact-icon">📍</div>
+                                <div class="contact-icon">✉️</div>
                                 <div class="contact-text">
-                                    <h4>Office</h4>
-                                    <p>123 Innovation Drive, Silicon Valley, CA 94043, USA</p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="contact-icon">📞</div>
-                                <div class="contact-text">
-                                    <h4>Phone</h4>
-                                    <p><a href="tel:+1234567890">+1 (234) 567-890</a></p>
+                                    <h4>Email 1</h4>
+                                    <p><a href="mailto:ne.benrahla@hns-re2sd.dz">ne.benrahla@hns-re2sd.dz</a></p>
                                 </div>
                             </li>
                             <li>
                                 <div class="contact-icon">✉️</div>
                                 <div class="contact-text">
-                                    <h4>Email</h4>
-                                    <p><a href="mailto:info@diagnosium.com">info@diagnosium.com</a></p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="contact-icon">🕒</div>
-                                <div class="contact-text">
-                                    <h4>Hours</h4>
-                                    <p>Monday - Friday: 9am - 6pm EST</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <div class="contact-info">
-                        <h2>For Media Inquiries</h2>
-                        <ul class="contact-details">
-                            <li>
-                                <div class="contact-icon">✉️</div>
-                                <div class="contact-text">
-                                    <h4>Press Contact</h4>
-                                    <p><a href="mailto:press@diagnosium.com">press@diagnosium.com</a></p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="contact-icon">📞</div>
-                                <div class="contact-text">
-                                    <h4>Media Phone</h4>
-                                    <p><a href="tel:+1234567891">+1 (234) 567-891</a></p>
+                                    <h4>Email 2</h4>
+                                    <p><a href="mailto:ma.chaibainou@hns-re2sd.dz">ma.chaibainou@hns-re2sd.dz</a></p>
                                 </div>
                             </li>
                         </ul>
@@ -695,36 +662,11 @@
             el: '#app',
             delimiters: ['[[', ']]'],
             data: {
-                teamMembers: [
-                    {
-                        name: 'Dr. Sarah Chen',
-                        role: 'Co-Founder & CEO',
-                        bio: 'Former neurologist with 15+ years of clinical experience and a passion for healthcare innovation.',
-                        image: 'https://randomuser.me/api/portraits/women/23.jpg'
-                    },
-                    {
-                        name: 'Michael Rodriguez',
-                        role: 'Co-Founder & CTO',
-                        bio: 'AI specialist with a Ph.D. in Machine Learning and previous experience at leading tech companies.',
-                        image: 'https://randomuser.me/api/portraits/men/32.jpg'
-                    },
-                    {
-                        name: 'Dr. James Wilson',
-                        role: 'Chief Medical Officer',
-                        bio: 'Experienced physician and medical researcher specializing in diagnostic medicine and clinical workflows.',
-                        image: 'https://randomuser.me/api/portraits/men/92.jpg'
-                    },
-                    {
-                        name: 'Aisha Patel',
-                        role: 'Head of Product',
-                        bio: 'Product leader with experience at healthcare startups and a focus on user-centered design.',
-                        image: 'https://randomuser.me/api/portraits/women/65.jpg'
-                    }
-                ]
+                // teamMembers removed, not needed for single team presentation
             },
             methods: {
                 signIn() {
-                    alert('Sign In functionality will be implemented here');
+                    window.location.href = "/login";
                 }
             }
         });
