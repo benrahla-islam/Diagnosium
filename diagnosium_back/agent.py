@@ -1,6 +1,7 @@
 import os
 import re
 import json  # Move json import to top level
+import os.path  # <-- add this import
 from groq import Groq
 from typing import List, Dict, Any, Optional
 from langchain_groq import ChatGroq
@@ -23,6 +24,7 @@ class MedicalAI:
         self.vector_store = VectorStore()
         self.patient_data = {}
         self.conversation_history = []  # Add this to store conversation history
+        self.medications_loaded = False  # Track if medications are loaded
 
     def set_patient_data(self, patient_data: Dict[str, Any]) -> None:
         """Set patient data for use in assessments."""
@@ -170,6 +172,41 @@ class MedicalAI:
                 
                 result["all_reported_symptoms"] = self.patient_data["reported_symptoms"] # Return the updated list
             
+            # Medication suggestion logic
+            suggest_medication = False
+            # Heuristic: if diagnosis exists and is not just a question, or if emergency is False and symptoms are present
+            diagnosis_text = result.get("diagnosis", "").lower()
+            # Only suggest if not emergency and there is a diagnosis or clear symptoms
+            if (
+                not result.get("is_emergency", False)
+                and (
+                    ("diagnosis" in result and diagnosis_text and not diagnosis_text.strip().endswith("?"))
+                    or (self.patient_data.get("reported_symptoms"))
+                )
+            ):
+                suggest_medication = True
+
+            if suggest_medication:
+                # Lazy load medications if not already loaded
+                if not self.medications_loaded:
+                    self.load_medications()
+                # Use the diagnosis or symptoms as the query
+                query_text = diagnosis_text
+                if not query_text or query_text.strip() == "":
+                    query_text = ", ".join(self.patient_data.get("reported_symptoms", []))
+                # Retrieve top 5 relevant medications
+                meds = self.vector_store.query(query_text, top_k=5)
+                # Add to result
+                result["medication_suggestions"] = [
+                    m["conditioning"] for m in meds
+                ]
+                # Optionally, append to the response for user
+                if meds:
+                    result["response"] += (
+                        "\n\nSuggested medications (based on similar cases):\n"
+                        + "\n".join(f"- {m['conditioning']}" for m in meds)
+                    )
+
             # Add to conversation history
             self.conversation_history.append({
                 "user": user_input,
@@ -193,18 +230,28 @@ class MedicalAI:
                 "patient_data": self.patient_data # Return current patient data even on error
             }
 
+    def load_medications(self, medications_json_path: str = None):
+        """
+        Load medications from the medications .json file into the vector store.
+        """
+        import os
+        if not medications_json_path:
+            medications_json_path = os.path.join(os.path.dirname(__file__), "medications .json")
+        self.vector_store.load_medications_from_json(medications_json_path)
+        self.medications_loaded = True
+
 # Example usage
 if __name__ == "__main__":
     # Create the unified medical AI system
     medical_ai = MedicalAI()
     
     # Add medical knowledge
-    medical_ai.add_medical_reference("""
+    medical_ai.add_medical_reference("""\
     Common cold symptoms include runny nose, sore throat, coughing, sneezing, headaches, 
     and body aches. It typically resolves within 7-10 days without specific treatment.
     """, {"condition": "Common Cold"})
     
-    medical_ai.add_medical_reference("""
+    medical_ai.add_medical_reference("""\
     Influenza (flu) symptoms are similar to cold but more severe and include fever, 
     muscle aches, fatigue, and can last 1-2 weeks. Complications can be serious.
     """, {"condition": "Influenza"})

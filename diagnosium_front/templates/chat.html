@@ -6,16 +6,58 @@
     <title>Diagnosium - Chat Interface</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Add Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""/>
     <!-- Link to the new external CSS file -->
     <link rel="stylesheet" href="../static/chat.css">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <!-- Add Leaflet JS before your main.js -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""></script>
+    <!-- Add Map CSS (Ideally move to chat.css) -->
+    <style>
+        /* --- Map Section Styles (Using Leaflet classes now) --- */
+        .map-section {
+            /* Keep existing styles from chat.css if any, add/override below */
+            padding: 20px;
+            background: white; /* Ensure background */
+            border-radius: 12px; /* Ensure border-radius */
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); /* Ensure shadow */
+            display: flex; /* Use flex for structure */
+            flex-direction: column; /* Stack elements vertically */
+            margin-top: 20px; /* Add some space above */
+        }
+        #map { /* Target the Leaflet map container */
+            width: 100%;
+            height: 400px; /* Or adjust height as needed */
+            border-radius: 8px; /* Optional rounded corners */
+            flex-grow: 1; /* Allow map to take available space */
+            margin-bottom: 10px; /* Space before status */
+        }
+        #status { /* Target the Leaflet status container */
+            padding: 10px;
+            background: #f5f5f5;
+            border-top: 1px solid #ddd;
+            border-radius: 0 0 8px 8px; /* Optional rounding */
+            text-align: center;
+            font-size: 14px;
+        }
+        /* Status message colors */
+        .success { background-color: #dff0d8; color: #3c763d; }
+        .error { background-color: #f2dede; color: #a94442; }
+        .info { background-color: #d9edf7; color: #31708f; }
+        /* Style for user location marker */
+        .user-location div {
+            background-color: #1E90FF; /* Blue */
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -105,26 +147,18 @@
                 </div>
             </div>
 
-            <!-- Map Section -->
-            <div class="map-section" v-show="showMap">
-                <h2 style="margin-bottom: 15px; color: #3a7bd5; font-weight: 600;">Nearby Medical Facilities</h2>
-                <div id="map-container"></div>
-                <div class="info-box">
-                    <h3 style="font-size: 14px; margin-bottom: 8px; font-weight: 600; color: #333;">Map Legend</h3>
-                    <div class="legend">
-                        <div class="legend-icon you-icon"></div>
-                        <div>Your Location</div>
-                    </div>
-                    <div class="legend">
-                        <div class="legend-icon pharmacy-icon"></div>
-                        <div>Pharmacies</div>
-                    </div>
-                    <div class="legend">
-                        <div class="legend-icon hospital-icon"></div>
-                        <div>Hospitals/Clinics</div>
-                    </div>
-                    <div id="status">Loading map...</div>
-                </div>
+            <!-- Map Section - Only visible when 3+ bot messages -->
+            <div class="map-section" v-show="shouldShowMap">
+                <h2 style="margin-bottom: 15px; color: #3a7bd5; font-weight: 600; text-align: center;">Nearby Medical Facilities</h2>
+                <div id="map"></div>
+                <div id="status" class="info">Loading map...</div>
+                <!-- Dynamic list of places -->
+                <ul v-if="locations.length" style="margin-top:20px; padding-left:0; list-style:none;">
+                    <li v-for="place in locations" :key="place.title" style="margin-bottom:8px;">
+                        <strong>[[ place.title ]]</strong>
+                        <span style="color:#888; font-size:12px;">([[ place.lat ]], [[ place.lng ]])</span>
+                    </li>
+                </ul>
             </div>
 
         </div> <!-- End .main-content -->
@@ -272,8 +306,107 @@
     <script>
         // Centralize API configuration - This should be before Vue initialization
         const API_BASE_URL = 'http://localhost:8000';
-        
-        // Vue app initialization
+
+        // --- Leaflet Map Logic (Outside Vue Instance) ---
+        let map;
+        const defaultLat = 35.550739;
+        const defaultLng = 6.152932;
+        const defaultZoom = 13;
+
+        function initializeMap(locations) {
+            if (map) {
+                map.invalidateSize();
+                return;
+            }
+            const mapDiv = document.getElementById('map');
+            if (!mapDiv || mapDiv.offsetParent === null) {
+                return;
+            }
+            map = L.map('map').setView([defaultLat, defaultLng], defaultZoom);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            detectUserLocation(locations);
+        }
+
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            if (statusDiv) {
+                statusDiv.textContent = message;
+                statusDiv.className = type;
+            } else {
+                console.warn("Status div not found.");
+            }
+        }
+
+        function addMarker(lat, lng, title = 'Marker') {
+            if (!map) { console.error("Map not initialized for adding marker."); return null; }
+            if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+                console.error('Invalid coordinates for marker:', lat, lng); return null;
+            }
+            return L.marker([lat, lng]).addTo(map)
+                      .bindPopup(`<b>${title}</b><br>Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`);
+        }
+
+        function addDynamicMarkers(locations) {
+            if (!map) { console.error("Map not initialized for adding markers."); return; }
+            if (!locations || locations.length === 0) {
+                console.warn("No locations to add."); return;
+            }
+            locations.forEach(point => { addMarker(point.lat, point.lng, point.title); });
+        }
+
+        function detectUserLocation(locations) {
+            if (!map) { console.error("Map not initialized for detecting location."); return; }
+
+            if (!navigator.geolocation) {
+                showStatus('Geolocation not supported. Showing predefined locations near Batna.', 'error');
+                map.setView([defaultLat, defaultLng], defaultZoom);
+                addDynamicMarkers(locations);
+                return;
+            }
+
+            showStatus('Detecting your location...', 'info');
+            const options = { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 };
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    map.setView([lat, lng], defaultZoom);
+
+                    // Add user marker with custom icon
+                    L.marker([lat, lng], {
+                        icon: L.divIcon({ className: 'user-location', html: '<div></div>', iconSize: [16, 16], iconAnchor: [8, 8] })
+                    }).addTo(map).bindPopup("<b>You are here</b>");
+
+                    // Add accuracy circle
+                    const accuracy = position.coords.accuracy;
+                    const radiusToShow = Math.max(accuracy, 20);
+                    L.circle([lat, lng], { radius: radiusToShow, weight: 1, color: '#1E90FF', fillColor: '#1E90FF', fillOpacity: 0.1 }).addTo(map);
+
+                    showStatus(`Found your location. Displaying nearby points.`, 'success');
+                    addDynamicMarkers(locations);
+                },
+                (error) => {
+                    let errorMessage;
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED: errorMessage = "Location access denied."; break;
+                        case error.POSITION_UNAVAILABLE: errorMessage = "Location information unavailable."; break;
+                        case error.TIMEOUT: errorMessage = "Location request timed out."; break;
+                        default: errorMessage = "Could not get your location."; break;
+                    }
+                    showStatus(errorMessage + ' Showing predefined locations near Batna.', 'error');
+                    map.setView([defaultLat, defaultLng], defaultZoom);
+                    addDynamicMarkers(locations);
+                },
+                options
+            );
+        }
+        // --- End Leaflet Map Logic ---
+
         new Vue({
             el: '#app',
             delimiters: ['[[', ']]'],
@@ -284,7 +417,6 @@
                 botStatus: 'Online',
                 apiEndpoint: `${API_BASE_URL}/message`, // API for text chat
                 showPatientPopup: false,
-                showMap: false, // Control map visibility
                 patientInfo: { // Keep patient info separate
                     name: '',
                     age: null, // Initialize age as null or 0
@@ -298,7 +430,14 @@
                 showCameraModal: false,
                 capturedImage: null, // Holds the base64 image data URL
                 isAnalyzing: false, // Tracks if the image is being sent/processed
-                stream: null       // Holds the MediaStream object
+                stream: null,       // Holds the MediaStream object
+                locations: []
+            },
+            computed: {
+                shouldShowMap() {
+                    // Count bot messages
+                    return this.messages.filter(m => m.sender === 'bot').length >= 3;
+                }
             },
             methods: {
                 signIn() {
@@ -343,6 +482,7 @@
                             'Content-Type': 'application/json',
                              // Add any required Auth headers if needed, e.g.,
                              // 'Authorization': `Bearer ${your_jwt_token}`
+
                         },
                         // Send patient info context along with the message if available
                         body: JSON.stringify({
@@ -374,10 +514,8 @@
                         } else {
                             const data = await response.json();
                             if (data && typeof data.answer !== 'undefined') {
-                                // Use the 'response' field from backend, fallback to diagnosis if missing
                                 const botText = (data.answer.response || data.answer.diagnosis || '').replace(/\n/g, '<br>');
                                 this.addBotMessage(botText);
-                                this.showMap = true; // Use 'this.' to update Vue state
                             } else {
                                 console.error('Invalid response structure:', data);
                                 this.addBotMessage("I received an unexpected response from the server. Please try again.");
@@ -577,7 +715,7 @@
 
                         if (!response.ok) {
                             console.error('Text extraction API Error Status:', response.status, response.statusText);
-                            let errorMsg = `Analysis failed (${response.status}).`;
+                            let errorMsg = `Analysis failed (${response.status}).`;;
                              try {
                                  const errorData = await response.json();
                                  if (response.status === 422 && errorData.detail) {
@@ -608,6 +746,18 @@
                         this.addBotMessage(botResponse);
                         // --- End of existing logic ---
 
+                        // --- Optionally show map after image analysis response ---
+                        // this.showMap = true;
+                        // this.$nextTick(() => {
+                        //     if (this.showMap && !map) {
+                        //         initializeMap();
+                        //     } else if (map) {
+                        //         map.invalidateSize();
+                        //     }
+                        // });
+                        // --- End optional map show ---
+
+
                     } catch (error) {
                         console.error("Error analyzing image:", error);
                         this.addBotMessage(`Sorry, I encountered an error analyzing the image. ${error.message || 'Please try again.'}`);
@@ -621,21 +771,67 @@
                  // Watch messages array changes to scroll down
                  messages: function() {
                     this.scrollToBottom();
+                 },
+                 // Watch showMap to initialize map when it becomes visible
+                 shouldShowMap(newVal, oldVal) {
+                     if (newVal && !oldVal) {
+                         this.$nextTick(() => {
+                             initializeMap(this.locations);
+                         });
+                     }
+                 },
+                 locations(newVal, oldVal) {
+                     // If map is already initialized and visible, add markers when locations are loaded
+                     if (this.shouldShowMap && map && newVal.length) {
+                         addDynamicMarkers(newVal);
+                     }
                  }
             },
             mounted() {
                 // Focus input field on component mount
                 this.$nextTick(() => {
                     this.$refs.inputField.focus();
-                    // Initialize the map after Vue has rendered the DOM
-                    if (typeof initMap === "function") {
-                        initMap();
-                    }
+                    // --- Initialize map ONLY if showMap is initially true ---
+                    // Note: Map initialization is now primarily handled by the watcher
+                    // or when a response triggers showMap = true.
+                    // If you want the map to load immediately on page load (even if hidden),
+                    // you could call initializeMap() here unconditionally, but it might
+                    // load resources unnecessarily if the user never triggers a response
+                    // that shows the map.
+                    // if (this.showMap && typeof initializeMap === "function") {
+                    //     initializeMap();
+                    // }
                 });
+                // Optionally, initialize map if already 3+ bot messages on mount
+                if (this.shouldShowMap) {
+                    this.$nextTick(() => {
+                        initializeMap(this.locations);
+                    });
+                }
+
+                // Load locations.json dynamically
+                fetch('../static/locations.json')
+                    .then(res => res.json())
+                    .then(data => {
+                        this.locations = data;
+                        // If map is already initialized and visible, add markers
+                        if (this.shouldShowMap && map) {
+                            addDynamicMarkers(this.locations);
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Failed to load locations.json", err);
+                        this.locations = [];
+                    });
             },
             beforeDestroy() {
                 // Ensure camera stream is stopped if component is destroyed
                 this.closeCamera();
+                // Optional: Clean up map instance if needed
+                if (map) {
+                    map.remove();
+                    map = null;
+                }
             }
         });
     </script>
