@@ -335,6 +335,98 @@
                 max-width: 90%;
             }
         }
+
+        .patient-info-btn {
+            background: #fff;
+            color: #3a7bd5;
+            border: 1px solid #3a7bd5;
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-left: 15px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .patient-info-btn:hover {
+            background: #3a7bd5;
+            color: #fff;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 12px;
+            padding: 32px 28px 24px 28px;
+            min-width: 320px;
+            max-width: 90vw;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .modal-content h2 {
+            margin-bottom: 10px;
+            color: #3a7bd5;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .modal-content label {
+            display: flex;
+            flex-direction: column;
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .modal-content input,
+        .modal-content select,
+        .modal-content textarea {
+            margin-top: 4px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            font-size: 14px;
+            background: #f8f9fa;
+            resize: vertical;
+        }
+        .modal-content textarea {
+            min-height: 48px;
+            max-height: 120px;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .modal-actions button {
+            padding: 7px 18px;
+            border-radius: 18px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            background: #3a7bd5;
+            color: #fff;
+            transition: background 0.2s;
+        }
+        .modal-actions button[type="button"] {
+            background: #e0e0e0;
+            color: #333;
+        }
+        .modal-actions button[type="button"]:hover {
+            background: #bdbdbd;
+        }
+        .modal-actions button[type="submit"]:hover {
+            background: #005fa3;
+        }
     </style>
 </head>
 <body>
@@ -366,6 +458,7 @@
                 <div class="chat-header">
                     <div>Diagnosium Assistant</div>
                     <div class="status">[[ botStatus ]]</div>
+                    <button class="patient-info-btn" @click="showPatientPopup = true">Patient Info</button>
                 </div>
                 
                 <div class="chat-messages" ref="chatMessages">
@@ -408,7 +501,40 @@
             </div>
         </div>
 
-        
+        <!-- Patient Info Popup Modal -->
+        <div v-if="showPatientPopup" class="modal-overlay">
+            <div class="modal-content">
+                <h2>Patient Information</h2>
+                <form @submit.prevent="submitPatientInfo">
+                    <label>
+                        Name:
+                        <input type="text" v-model="patientInfo.name" required>
+                    </label>
+                    <label>
+                        Age:
+                        <input type="number" v-model="patientInfo.age" min="0" required>
+                    </label>
+                    <label>
+                        Gender:
+                        <select v-model="patientInfo.gender" required>
+                            <option disabled value="">Select</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Other</option>
+                        </select>
+                    </label>
+                    <label>
+                        Symptoms:
+                        <textarea v-model="patientInfo.symptoms" required></textarea>
+                    </label>
+                    <div class="modal-actions">
+                        <button type="submit">Submit</button>
+                        <button type="button" @click="showPatientPopup = false">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -423,7 +549,14 @@
                 messages: [],
                 isTyping: false,
                 botStatus: 'Online',
-                apiEndpoint: `${API_BASE_URL}/message` // Use the centralized URL
+                apiEndpoint: `${API_BASE_URL}/message`, // Use the centralized URL
+                showPatientPopup: false,
+                patientInfo: {
+                    name: '',
+                    age: '',
+                    gender: '',
+                    symptoms: ''
+                },
             },
             methods: {
                 signIn() {
@@ -546,7 +679,27 @@
                 scrollToBottom() {
                     const chatContainer = this.$refs.chatMessages;
                     chatContainer.scrollTop = chatContainer.scrollHeight;
-                }
+                },
+                async submitPatientInfo() {
+                    try {
+                        // You may want to change the endpoint as needed
+                        const response = await fetch(`${API_BASE_URL}/patient-info`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(this.patientInfo)
+                        });
+                        if (!response.ok) {
+                            alert('Failed to save patient info.');
+                        } else {
+                            alert('Patient info saved!');
+                            this.showPatientPopup = false;
+                        }
+                    } catch (e) {
+                        alert('Error sending patient info.');
+                    }
+                },
             },
             updated() {
                 // Ensure chat is scrolled to bottom when new messages arrive

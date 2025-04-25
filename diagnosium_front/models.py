@@ -2,6 +2,7 @@ from flask_login import UserMixin
 # from diagnosium_front import db
 # from sqlalchemy.dialects.postgresql import JSON
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Enum
 import json
 
 
@@ -13,7 +14,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(100), unique=True)
     name = db.Column(db.String(100))
     password = db.Column(db.String(200))
-    subscription = db.Column(db.String(50), default='Free')
+    subscription = db.Column(Enum('Free', 'Pro'), default='Free')
     conversations = db.relationship('Conversation', backref='user', lazy=True)
 
     def __init__(self, email, name, password):

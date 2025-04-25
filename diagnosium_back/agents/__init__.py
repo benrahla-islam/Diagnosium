@@ -1,0 +1,1 @@
+from .main import contains_prompt_injection
