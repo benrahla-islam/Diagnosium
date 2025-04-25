@@ -676,3 +676,25 @@ footer {
     background-color: #F44336;
     border: 2px solid white;
 }
+
+.chat-image-preview {
+  max-width: 200px; /* Adjust as needed */
+  max-height: 200px; /* Adjust as needed */
+  border-radius: 8px;
+  margin-bottom: 5px; /* Add some space below the image if text follows */
+  display: block; /* Ensure it takes its own line */
+}
+
+.user-message .message-content {
+  /* Ensure user message bubble accommodates the image */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Align image/text to the right for user */
+}
+
+.bot-message .message-content {
+   /* Ensure bot message bubble accommodates potential future images */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align image/text to the left for bot */
+}
