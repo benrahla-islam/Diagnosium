@@ -1,14 +1,10 @@
 from flask_login import UserMixin
-# from diagnosium_front import db
-# from sqlalchemy.dialects.postgresql import JSON
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Enum
 import json
 
-
-
 db = SQLAlchemy()
-
+# Import db from the package using absolute import
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True)
