@@ -66,7 +66,10 @@
                          :class="['message', message.sender === 'user' ? 'user-message' : 'bot-message']">
                         <img v-if="message.sender === 'bot'" src="../static/logo.png" alt="Bot" class="bot-avatar">
                         <div class="message-content">
-                            <span v-html="message.text"></span> <!-- Use v-html if bot response might contain simple HTML like line breaks -->
+                            <!-- Display image if present -->
+                            <img v-if="message.imageData" :src="message.imageData" alt="Sent Image" class="chat-image-preview">
+                            <!-- Display text (allow HTML for bot responses) -->
+                            <span v-if="message.text" v-html="message.text"></span>
                             <span class="timestamp">[[ message.time ]]</span>
                         </div>
                     </div>
@@ -150,8 +153,20 @@
                         </select>
                     </label>
                     <label>
-                        Known Allergies / Conditions:
-                        <textarea v-model="patientInfo.symptoms" placeholder="e.g., Penicillin allergy, Diabetes Type 2"></textarea>
+                        Known Allergies:
+                        <input type="text" v-model="patientInfo.allergies" placeholder="e.g., Penicillin, Peanuts">
+                    </label>
+                    <label>
+                        Chronic Conditions:
+                        <input type="text" v-model="patientInfo.chronic_conditions" placeholder="e.g., Asthma, Diabetes Type 2">
+                    </label>
+                    <label>
+                        Current Medications:
+                        <input type="text" v-model="patientInfo.medications" placeholder="e.g., Albuterol Inhaler, Metformin">
+                    </label>
+                    <label>
+                        Significant Medical History / Previous Surgeries:
+                        <textarea v-model="patientInfo.medical_history" placeholder="e.g., Appendectomy (2015), History of high blood pressure"></textarea>
                     </label>
                     <div class="modal-actions">
                         <button type="submit">Save Info</button>
@@ -274,7 +289,10 @@
                     name: '',
                     age: null, // Initialize age as null or 0
                     gender: '',
-                    symptoms: '' // Renamed from 'symptoms' for clarity if needed, or keep as is. Maybe 'conditions_allergies'?
+                    allergies: '', // Added
+                    chronic_conditions: '', // Added
+                    medications: '', // Added
+                    medical_history: '' // Renamed from 'symptoms' and purpose clarified
                 },
                 // Camera State - moved to top level
                 showCameraModal: false,
@@ -414,28 +432,9 @@
 
                 async submitPatientInfo() {
                      console.log("Submitting patient info:", this.patientInfo);
-                    try {
-                        // Optional: Send patient info to a specific endpoint if needed
-                        // For now, we just save it locally and potentially send with chat messages
-                         alert('Patient info updated locally!'); // Simple confirmation
-                         // Example: Send to backend if needed
-                        /*
-                        const response = await fetch(`${API_BASE_URL}/patient-info`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(this.patientInfo)
-                        });
-                        if (!response.ok) {
-                            alert('Failed to save patient info to server.');
-                        } else {
-                            alert('Patient info saved!');
-                        }
-                        */
-                        this.showPatientPopup = false; // Close modal on success
-                    } catch (e) {
-                        console.error("Error submitting patient info:", e);
-                        alert('An error occurred while saving patient info.');
-                    }
+                    // No API call needed here, info is sent with messages
+                    alert('Patient info updated locally! It will be sent with your next message.');
+                    this.showPatientPopup = false; // Close modal on success
                 },
 
                 // --- Camera Methods ---
@@ -547,67 +546,71 @@
                     this.isAnalyzing = true; // Show loading indicator
 
                     try {
-                        // Convert base64 image to blob
-                        const fetchRes = await fetch(this.capturedImage);
-                        const blob = await fetchRes.blob();
+                        // No need to convert to blob anymore
+                        // const fetchRes = await fetch(this.capturedImage);
+                        // const blob = await fetchRes.blob();
 
-                        // Create form data to send to API
-                        const formData = new FormData();
-                        // Use a generic name, backend should handle it
-                        formData.append('image', blob, 'medication_scan.jpg');
+                        // Create JSON payload
+                        const payload = {
+                            image_base64: this.capturedImage,
+                            filename: 'medication_scan.jpg'
+                        };
 
-                        // Send to your medication analysis API endpoint
-                        const response = await fetch(`${API_BASE_URL}/analyze-medication`, {
+                        // Send to your text extraction API endpoint as JSON
+                        const response = await fetch(`${API_BASE_URL}/extract-text`, {
                             method: 'POST',
-                            body: formData
-                            // NO 'Content-Type' header here - browser sets it for FormData
-                             // Add Auth headers if required by the API
-                             // headers: { 'Authorization': `Bearer ${your_token}` }
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(payload)
                         });
 
-                        // Add user message indicating image was sent
+                        // Add user message *with image data*
                         const userMsg = {
-                            text: '(Sent medication image for analysis)',
+                            // text: '(Sent image for text extraction)', // Optional: Keep or remove text
                             sender: 'user',
-                            time: this.getCurrentTime()
+                            time: this.getCurrentTime(),
+                            imageData: this.capturedImage // Add the base64 image data here
                         };
                         this.messages.push(userMsg);
-
+                        this.scrollToBottom(); // Scroll after adding user message with image
 
                         if (!response.ok) {
-                            console.error('Medication API Error Status:', response.status, response.statusText);
+                            console.error('Text extraction API Error Status:', response.status, response.statusText);
                             let errorMsg = `Analysis failed (${response.status}).`;
                              try {
                                  const errorData = await response.json();
-                                 if(errorData && errorData.detail) { errorMsg += ` ${errorData.detail}`; }
-                             } catch(e) { /* Ignore */ }
-                            throw new Error(errorMsg); // Throw error to be caught below
+                                 if (response.status === 422 && errorData.detail) {
+                                     errorMsg += ` Invalid data: ${JSON.stringify(errorData.detail)}`;
+                                 } else if(errorData && errorData.detail) {
+                                     errorMsg += ` ${errorData.detail}`;
+                                 } else if (errorData && errorData.answer && errorData.answer.response) {
+                                     errorMsg = errorData.answer.response;
+                                 }
+                             } catch(e) {
+                                 errorMsg += ` ${response.statusText}`;
+                             }
+                            throw new Error(errorMsg);
                         }
 
                         const result = await response.json();
-                        console.log("Analysis result:", result);
+                        console.log("Text extraction result:", result);
 
-                        // Construct bot response based on API result
-                        let botResponse = "I couldn't identify the medication from the image."; // Default
-                        if (result && result.medicationName) {
-                             botResponse = `Based on the image, this looks like: <strong>${result.medicationName}</strong>.`;
-                            if(result.description) {
-                                botResponse += `<br>${result.description}`;
-                            }
-                             if(result.warnings) {
-                                botResponse += `<br><strong>Warnings:</strong> ${result.warnings}`;
-                            }
-                             // Add more fields as needed from your API response
-                        } else if (result && result.message) {
-                            // Handle cases where API returns a message instead of identification
-                            botResponse = result.message;
+                        // --- Keep the rest of the result handling logic the same ---
+                        let botResponse = "I couldn't extract any meaningful text from the image."; // Default
+
+                        if (result && result.answer) {
+                            botResponse = result.answer.response || result.answer.diagnosis || "I analyzed the image but couldn't determine a clear response.";
+                        } else if (result && result.response) {
+                            botResponse = result.response;
                         }
 
                         this.addBotMessage(botResponse);
+                        // --- End of existing logic ---
 
                     } catch (error) {
-                        console.error("Error analyzing medication:", error);
-                        this.addBotMessage(`Sorry, I encountered an error analyzing the medication image. ${error.message || 'Please try again.'}`);
+                        console.error("Error analyzing image:", error);
+                        this.addBotMessage(`Sorry, I encountered an error analyzing the image. ${error.message || 'Please try again.'}`);
                     } finally {
                         this.isAnalyzing = false;
                         this.closeCamera(); // Close modal after analysis (success or fail)
